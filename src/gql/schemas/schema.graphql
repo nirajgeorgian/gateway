@@ -1,0 +1,34 @@
+scalar DateTime
+scalar Date
+
+type Query {
+  dummy: String
+}
+type Mutation {
+  dummy: String
+}
+type Subscription {
+  dummy: String
+}
+extend schema {
+  query: Query
+  mutation: Mutation
+  subscription: Subscription
+}
+
+type Job {
+  job_id: String
+  job_name: String
+}
+
+extend type Query {
+	job: Job
+}
+
+input CreateJobRequest {
+	job_id: String
+	job_name: String
+}
+extend type Mutation {
+	CreateJob(input: CreateJobRequest!): Job
+}
