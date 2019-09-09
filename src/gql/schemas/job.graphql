@@ -1,0 +1,16 @@
+type Job {
+  JobId: String
+  jobName: String
+}
+
+extend type Query {
+	job: Job
+}
+
+input CreateJobRequest {
+	job_id: String
+	job_name: String
+}
+extend type Mutation {
+	CreateJob(input: CreateJobRequest!): Job
+}

@@ -1,11 +1,17 @@
+//go:generate go run scripts/gqlgen.go -v
 package resolvers
 
 import (
 	"context"
+	"log"
+	"time"
 
+	"google.golang.org/grpc"
 	"github.com/nirajgeorgian/gateway/src/gql"
 	"github.com/nirajgeorgian/gateway/src/gql/models"
-	job "github.com/nirajgeorgian/job/src/proto"
+
+	model "github.com/nirajgeorgian/job/src/model"
+	proto "github.com/nirajgeorgian/job/src/api"
 )
 
 // THIS CODE IS A STARTING POINT ONLY. IT WILL NOT BE UPDATED WITH SCHEMA CHANGES.
@@ -25,18 +31,47 @@ func (r *Resolver) Subscription() gql.SubscriptionResolver {
 type mutationResolver struct{ *Resolver }
 
 func (r *mutationResolver) Dummy(ctx context.Context) (*string, error) {
-	panic("not implemented")
+	message := "Dodo Duck"
+
+	return &message, nil
 }
-func (r *mutationResolver) CreateJob(ctx context.Context, input models.CreateJobRequest) (*job.Job, error) {
-	panic("not implemented")
+func (r *mutationResolver) CreateJob(ctx context.Context, input models.CreateJobRequest) (*model.Job, error) {
+	job := model.Job{
+		JobId: *input.JobID,
+		JobName: *input.JobName,
+	}
+
+	// call the server
+	address     := "localhost:3000"
+
+	// Set up a connection to the server.
+	conn, err := grpc.Dial(address, grpc.WithInsecure())
+	if err != nil {
+		log.Fatalf("did not connect: %v", err)
+	}
+	defer conn.Close()
+	c := proto.NewJobServiceClient(conn)
+
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+
+	result, err := c.CreateJob(ctx, &proto.CreateJobRequest{Job: &job})
+	if err != nil {
+		log.Fatalf("could not greet: %v", err)
+	}
+	log.Printf("Greeting: %s", result.Job.JobName)
+
+	return &job, nil
 }
 
 type queryResolver struct{ *Resolver }
 
 func (r *queryResolver) Dummy(ctx context.Context) (*string, error) {
-	panic("not implemented")
+	message := "Dodo Duck"
+
+	return &message, nil
 }
-func (r *queryResolver) Job(ctx context.Context) (*job.Job, error) {
+func (r *queryResolver) Job(ctx context.Context) (*model.Job, error) {
 	panic("not implemented")
 }
 

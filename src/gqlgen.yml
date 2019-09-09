@@ -5,14 +5,21 @@
 
 schema:
   - gql/schemas/schema.graphql
+  - gql/schemas/job.graphql
+
 # Let gqlgen know where to put the generated server
 exec:
   filename: gql/generated.go
   package: gql
+
 # Let gqlgen know where to put the generated models (if any)
 model:
   filename: gql/models/generated.go
   package: models
+
+# Optional, turns on binding to field names by tag provided
+struct_tag: json
+
 # Let gqlgen know where to put the generated resolvers
 resolver:
   filename: gql/resolvers/generated.go
@@ -20,7 +27,7 @@ resolver:
   package: resolvers
 models:
   Job:
-    model: github.com/nirajgeorgian/job/src/proto.Job
+    model: github.com/nirajgeorgian/job/src/model.Job
   ID:
     model:
       - github.com/99designs/gqlgen/graphql.IntID

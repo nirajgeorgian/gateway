@@ -13,7 +13,7 @@ import (
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/introspection"
 	"github.com/nirajgeorgian/gateway/src/gql/models"
-	job "github.com/nirajgeorgian/job/src/proto"
+	"github.com/nirajgeorgian/job/src/model"
 	"github.com/vektah/gqlparser"
 	"github.com/vektah/gqlparser/ast"
 )
@@ -67,11 +67,11 @@ type ComplexityRoot struct {
 
 type MutationResolver interface {
 	Dummy(ctx context.Context) (*string, error)
-	CreateJob(ctx context.Context, input models.CreateJobRequest) (*job.Job, error)
+	CreateJob(ctx context.Context, input models.CreateJobRequest) (*model.Job, error)
 }
 type QueryResolver interface {
 	Dummy(ctx context.Context) (*string, error)
-	Job(ctx context.Context) (*job.Job, error)
+	Job(ctx context.Context) (*model.Job, error)
 }
 type SubscriptionResolver interface {
 	Dummy(ctx context.Context) (<-chan *string, error)
@@ -92,14 +92,14 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 	_ = ec
 	switch typeName + "." + field {
 
-	case "Job.job_id":
+	case "Job.JobId":
 		if e.complexity.Job.JobId == nil {
 			break
 		}
 
 		return e.complexity.Job.JobId(childComplexity), true
 
-	case "Job.job_name":
+	case "Job.jobName":
 		if e.complexity.Job.JobName == nil {
 			break
 		}
@@ -256,8 +256,8 @@ extend schema {
 }
 
 type Job {
-  job_id: String
-  job_name: String
+  JobId: String
+  jobName: String
 }
 
 extend type Query {
@@ -342,7 +342,7 @@ func (ec *executionContext) field___Type_fields_args(ctx context.Context, rawArg
 
 // region    **************************** field.gotpl *****************************
 
-func (ec *executionContext) _Job_job_id(ctx context.Context, field graphql.CollectedField, obj *job.Job) (ret graphql.Marshaler) {
+func (ec *executionContext) _Job_JobId(ctx context.Context, field graphql.CollectedField, obj *model.Job) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -376,7 +376,7 @@ func (ec *executionContext) _Job_job_id(ctx context.Context, field graphql.Colle
 	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Job_job_name(ctx context.Context, field graphql.CollectedField, obj *job.Job) (ret graphql.Marshaler) {
+func (ec *executionContext) _Job_jobName(ctx context.Context, field graphql.CollectedField, obj *model.Job) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -479,10 +479,10 @@ func (ec *executionContext) _Mutation_CreateJob(ctx context.Context, field graph
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*job.Job)
+	res := resTmp.(*model.Job)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalOJob2ᚖgithubᚗcomᚋnirajgeorgianᚋgatewayᚋvendorᚋgithubᚗcomᚋnirajgeorgianᚋjobᚋsrcᚋprotoᚐJob(ctx, field.Selections, res)
+	return ec.marshalOJob2ᚖgithubᚗcomᚋnirajgeorgianᚋjobᚋsrcᚋmodelᚐJob(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query_dummy(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -547,10 +547,10 @@ func (ec *executionContext) _Query_job(ctx context.Context, field graphql.Collec
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*job.Job)
+	res := resTmp.(*model.Job)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalOJob2ᚖgithubᚗcomᚋnirajgeorgianᚋgatewayᚋvendorᚋgithubᚗcomᚋnirajgeorgianᚋjobᚋsrcᚋprotoᚐJob(ctx, field.Selections, res)
+	return ec.marshalOJob2ᚖgithubᚗcomᚋnirajgeorgianᚋjobᚋsrcᚋmodelᚐJob(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query___type(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -1841,7 +1841,7 @@ func (ec *executionContext) unmarshalInputCreateJobRequest(ctx context.Context, 
 
 var jobImplementors = []string{"Job"}
 
-func (ec *executionContext) _Job(ctx context.Context, sel ast.SelectionSet, obj *job.Job) graphql.Marshaler {
+func (ec *executionContext) _Job(ctx context.Context, sel ast.SelectionSet, obj *model.Job) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.RequestContext, sel, jobImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -1850,10 +1850,10 @@ func (ec *executionContext) _Job(ctx context.Context, sel ast.SelectionSet, obj 
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Job")
-		case "job_id":
-			out.Values[i] = ec._Job_job_id(ctx, field, obj)
-		case "job_name":
-			out.Values[i] = ec._Job_job_name(ctx, field, obj)
+		case "JobId":
+			out.Values[i] = ec._Job_JobId(ctx, field, obj)
+		case "jobName":
+			out.Values[i] = ec._Job_jobName(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -2493,11 +2493,11 @@ func (ec *executionContext) marshalOBoolean2ᚖbool(ctx context.Context, sel ast
 	return ec.marshalOBoolean2bool(ctx, sel, *v)
 }
 
-func (ec *executionContext) marshalOJob2githubᚗcomᚋnirajgeorgianᚋgatewayᚋvendorᚋgithubᚗcomᚋnirajgeorgianᚋjobᚋsrcᚋprotoᚐJob(ctx context.Context, sel ast.SelectionSet, v job.Job) graphql.Marshaler {
+func (ec *executionContext) marshalOJob2githubᚗcomᚋnirajgeorgianᚋjobᚋsrcᚋmodelᚐJob(ctx context.Context, sel ast.SelectionSet, v model.Job) graphql.Marshaler {
 	return ec._Job(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalOJob2ᚖgithubᚗcomᚋnirajgeorgianᚋgatewayᚋvendorᚋgithubᚗcomᚋnirajgeorgianᚋjobᚋsrcᚋprotoᚐJob(ctx context.Context, sel ast.SelectionSet, v *job.Job) graphql.Marshaler {
+func (ec *executionContext) marshalOJob2ᚖgithubᚗcomᚋnirajgeorgianᚋjobᚋsrcᚋmodelᚐJob(ctx context.Context, sel ast.SelectionSet, v *model.Job) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}

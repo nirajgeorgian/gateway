@@ -6,7 +6,8 @@ import (
 	"os"
 
 	"github.com/99designs/gqlgen/handler"
-	"github.com/nirajgeorgian/gateway/src"
+	gql "github.com/nirajgeorgian/gateway/src/gql"
+	resolver "github.com/nirajgeorgian/gateway/src/gql/resolvers"
 )
 
 const defaultPort = "8080"
@@ -18,7 +19,13 @@ func main() {
 	}
 
 	http.Handle("/", handler.Playground("GraphQL playground", "/query"))
-	http.Handle("/query", handler.GraphQL(src.NewExecutableSchema(src.Config{Resolvers: &src.Resolver{}})))
+
+	c := gql.Config{Resolvers: &resolver.Resolver{}}
+	gqlHandler := handler.GraphQL(
+		gql.NewExecutableSchema(c),
+		handler.IntrospectionEnabled(true),
+	)
+	http.Handle("/query", gqlHandler)
 
 	log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
 	log.Fatal(http.ListenAndServe(":"+port, nil))
