@@ -1,0 +1,18 @@
+type Account {
+  AccountId: String
+  Email: String
+  Username: String
+  Description: String
+  PasswordHash: String
+  PasswordSalt: String
+}
+
+input CreateAccountReq {
+  Email: String
+  Username: String
+  Description: String
+  Password: String
+}
+extend type Mutation {
+  CreateAccount(input: CreateAccountReq!): Account
+}

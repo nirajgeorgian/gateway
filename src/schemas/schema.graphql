@@ -7,11 +7,8 @@ type Query {
 type Mutation {
   dummy: String
 }
-type Subscription {
-  dummy: String
-}
+
 extend schema {
   query: Query
   mutation: Mutation
-  subscription: Subscription
 }

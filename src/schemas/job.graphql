@@ -3,14 +3,14 @@ type Job {
   jobName: String
 }
 
-extend type Query {
-	job: Job
-}
+# extend type Query {
+# 	job: Job
+# }
 
-input CreateJobRequest {
+input CreateJobReq {
 	job_id: String
 	job_name: String
 }
 extend type Mutation {
-	CreateJob(input: CreateJobRequest!): Job
+	CreateJob(input: CreateJobReq!): Job
 }

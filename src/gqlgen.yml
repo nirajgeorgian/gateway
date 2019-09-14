@@ -4,32 +4,34 @@
 # for detailed .gqlgen.yml documentation.
 
 schema:
-  - gql/schemas/schema.graphql
-  - gql/schemas/job.graphql
+  - schemas/schema.graphql
+  - schemas/job.graphql
+  - schemas/account.graphql
 
 # Let gqlgen know where to put the generated server
 exec:
-  filename: gql/generated.go
-  package: gql
+  filename: generated.go
+  package: gateway
 
 # Let gqlgen know where to put the generated models (if any)
 model:
-  filename: gql/models/generated.go
+  filename: models/generated.go
   package: models
 
-# Optional, turns on binding to field names by tag provided
-struct_tag: json
-
-# Let gqlgen know where to put the generated resolvers
-resolver:
-  filename: gql/resolvers/generated.go
-  type: Resolver
-  package: resolvers
+# # Optional, turns on binding to field names by tag provided
+# struct_tag: json
+#
+# # Let gqlgen know where to put the generated resolvers
+# resolver:
+#   filename: gql/resolvers/generated.go
+#   type: Resolver
+#   package: resolvers
 models:
   Job:
     model: github.com/nirajgeorgian/job/src/model.Job
+  Account:
+    model: github.com/nirajgeorgian/account/src/model.Account
   ID:
     model:
       - github.com/99designs/gqlgen/graphql.IntID
       - github.com/99designs/gqlgen/graphql.ID
-autobind: []
