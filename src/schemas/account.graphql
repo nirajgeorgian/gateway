@@ -6,13 +6,23 @@ type Account {
   PasswordHash: String
   PasswordSalt: String
 }
-
 input CreateAccountReq {
-  Email: String
-  Username: String
-  Description: String
-  Password: String
+  Email: String!
+  Username: String!
+  Description: String!
+  PasswordHash: String!
 }
+
+type AuthRes {
+  Token: String
+  Valid: Boolean
+}
+input AuthReq {
+  Email: String
+  PasswordHash: String
+}
+
 extend type Mutation {
   CreateAccount(input: CreateAccountReq!): Account
+  Auth (input: AuthReq!): AuthRes
 }

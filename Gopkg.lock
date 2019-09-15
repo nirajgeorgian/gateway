@@ -43,17 +43,12 @@
   version = "v1.0.10"
 
 [[projects]]
-  branch = "master"
-  digest = "1:d21ca367d43f61f3de3adfbf6e2d4ca73dcba3f926020880f890e672e5fe3714"
-  name = "github.com/denisenkom/go-mssqldb"
-  packages = [
-    ".",
-    "internal/cp",
-    "internal/decimal",
-    "internal/querytext",
-  ]
+  digest = "1:76dc72490af7174349349838f2fe118996381b31ea83243812a97e5a0fd5ed55"
+  name = "github.com/dgrijalva/jwt-go"
+  packages = ["."]
   pruneopts = "UT"
-  revision = "19fca521dbdfdf5912ecc339af1a3037133bd151"
+  revision = "06ea1031745cb8b3dab3f6a236daf2b0aa468b7e"
+  version = "v3.2.0"
 
 [[projects]]
   digest = "1:abeb38ade3f32a92943e5be54f55ed6d6e3b6602761d74b4aab4c9dd45c18abd"
@@ -74,14 +69,6 @@
   pruneopts = "UT"
   revision = "0ca988a254f991240804bf9821f3450d87ccbb1b"
   version = "v1.3.0"
-
-[[projects]]
-  branch = "master"
-  digest = "1:914bae0d7af57d7f9c2c8eff864071e57c3effebd78eeef26eff4afb0372ed2f"
-  name = "github.com/golang-sql/civil"
-  packages = ["."]
-  pruneopts = "UT"
-  revision = "cb61b32ac6fe84d34b81730175f91965e43d0f90"
 
 [[projects]]
   branch = "master"
@@ -184,11 +171,10 @@
   version = "v0.18.0"
 
 [[projects]]
-  digest = "1:d477d6f36f0eee80b339fe19072837c18b6ff0b7b2d8bedb4f9f8ee8b7fee03f"
+  digest = "1:da6718abe4d47b1132d98bf3f9b18e302d537bf6daf02bd40804d9295a3f32bd"
   name = "github.com/jinzhu/gorm"
   packages = [
     ".",
-    "dialects/mssql",
     "dialects/postgres",
   ]
   pruneopts = "UT"
@@ -202,14 +188,6 @@
   pruneopts = "UT"
   revision = "f5c5f50e6090ae76a29240b61ae2a90dd810112e"
   version = "v1.0.0"
-
-[[projects]]
-  digest = "1:31e761d97c76151dde79e9d28964a812c46efc5baee4085b86f68f0c654450de"
-  name = "github.com/konsorten/go-windows-terminal-sequences"
-  packages = ["."]
-  pruneopts = "UT"
-  revision = "f55edac94c9bbba5d6182a4be46d86a2c9b5b50e"
-  version = "v1.0.2"
 
 [[projects]]
   digest = "1:0ead8e64fe356bd9221605e3ec40b4438509868018cbbbaaaff3ebae1b69b78b"
@@ -242,7 +220,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:3afa355b2cb576a039236e803fcb9c883577935002e52ab01715a09cd8e4cffa"
+  digest = "1:b013e45e055bd2d5207d961403eae1e72bb52f521dabd2791c2e91891698a9ea"
   name = "github.com/nirajgeorgian/account"
   packages = [
     "src/api",
@@ -251,20 +229,7 @@
     "src/model",
   ]
   pruneopts = "UT"
-  revision = "fbcfc24dfac656b4eedddc7a633b0031c7895997"
-
-[[projects]]
-  branch = "develop"
-  digest = "1:c467e58ba68b3004101bd14a947472646361edf85661451545d1b0f507ebff6f"
-  name = "github.com/nirajgeorgian/job"
-  packages = [
-    "src/api",
-    "src/app",
-    "src/db",
-    "src/model",
-  ]
-  pruneopts = "UT"
-  revision = "7cbd1f89c56389b358cf030adb8ebe98a950393d"
+  revision = "28a5b381fbc5b59069f467cfb86ccd46005c3446"
 
 [[projects]]
   digest = "1:93131d8002d7025da13582877c32d1fc302486775a1b06f62241741006428c5e"
@@ -291,20 +256,20 @@
   version = "v2.0.1"
 
 [[projects]]
+  digest = "1:274f67cb6fed9588ea2521ecdac05a6d62a8c51c074c1fccc6a49a40ba80e925"
+  name = "github.com/satori/go.uuid"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "f58768cc1a7a7e77a3bd49e98cdd21419399b6a3"
+  version = "v1.2.0"
+
+[[projects]]
   digest = "1:9421f6e9e28ef86933e824b5caff441366f2b69bb281085b9dca40e1f27a1602"
   name = "github.com/shurcooL/sanitized_anchor_name"
   packages = ["."]
   pruneopts = "UT"
   revision = "7bfe4c7ecddb3666a94b053b422cdd8f5aaa3615"
   version = "v1.0.0"
-
-[[projects]]
-  digest = "1:04457f9f6f3ffc5fea48e71d62f2ca256637dee0a04d710288e27e05c8b41976"
-  name = "github.com/sirupsen/logrus"
-  packages = ["."]
-  pruneopts = "UT"
-  revision = "839c75faf7f98a33d445d181f3018b5c3409a45e"
-  version = "v1.4.2"
 
 [[projects]]
   digest = "1:bb495ec276ab82d3dd08504bbc0594a65de8c3b22c6f2aaa92d05b73fbf3a82e"
@@ -383,9 +348,12 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:100a36e16f77aaad7c9144ab26bcefb92c5b6ebed5b137f935fdc11f541fa5b8"
+  digest = "1:9d5b5d543996dd584da1db1e0de1926f3e4c3a8dba0fa2f8db70f3ebee2342e0"
   name = "golang.org/x/crypto"
-  packages = ["md4"]
+  packages = [
+    "bcrypt",
+    "blowfish",
+  ]
   pruneopts = "UT"
   revision = "227b76d455e791cb042b03e633e2f7fbcfdf74a5"
 
@@ -533,14 +501,10 @@
     "github.com/99designs/gqlgen/handler",
     "github.com/nirajgeorgian/account/src/api",
     "github.com/nirajgeorgian/account/src/model",
-    "github.com/nirajgeorgian/job/src/api",
-    "github.com/nirajgeorgian/job/src/model",
-    "github.com/pkg/errors",
     "github.com/spf13/cobra",
     "github.com/spf13/viper",
     "github.com/vektah/gqlparser",
     "github.com/vektah/gqlparser/ast",
-    "google.golang.org/grpc",
   ]
   solver-name = "gps-cdcl"
   solver-version = 1

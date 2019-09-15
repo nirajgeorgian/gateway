@@ -2,14 +2,19 @@
 
 package models
 
-type CreateAccountReq struct {
-	Email       *string `json:"Email"`
-	Username    *string `json:"Username"`
-	Description *string `json:"Description"`
-	Password    *string `json:"Password"`
+type AuthReq struct {
+	Email        *string `json:"Email"`
+	PasswordHash *string `json:"PasswordHash"`
 }
 
-type CreateJobReq struct {
-	JobID   *string `json:"job_id"`
-	JobName *string `json:"job_name"`
+type AuthRes struct {
+	Token *string `json:"Token"`
+	Valid *bool   `json:"Valid"`
+}
+
+type CreateAccountReq struct {
+	Email        string `json:"Email"`
+	Username     string `json:"Username"`
+	Description  string `json:"Description"`
+	PasswordHash string `json:"PasswordHash"`
 }

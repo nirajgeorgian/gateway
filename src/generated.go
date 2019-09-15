@@ -11,9 +11,8 @@ import (
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/introspection"
-	model1 "github.com/nirajgeorgian/account/src/model"
+	"github.com/nirajgeorgian/account/src/model"
 	"github.com/nirajgeorgian/gateway/src/models"
-	"github.com/nirajgeorgian/job/src/model"
 	"github.com/vektah/gqlparser"
 	"github.com/vektah/gqlparser/ast"
 )
@@ -53,14 +52,14 @@ type ComplexityRoot struct {
 		Username     func(childComplexity int) int
 	}
 
-	Job struct {
-		JobId   func(childComplexity int) int
-		JobName func(childComplexity int) int
+	AuthRes struct {
+		Token func(childComplexity int) int
+		Valid func(childComplexity int) int
 	}
 
 	Mutation struct {
+		Auth          func(childComplexity int, input models.AuthReq) int
 		CreateAccount func(childComplexity int, input models.CreateAccountReq) int
-		CreateJob     func(childComplexity int, input models.CreateJobReq) int
 		Dummy         func(childComplexity int) int
 	}
 
@@ -71,8 +70,8 @@ type ComplexityRoot struct {
 
 type MutationResolver interface {
 	Dummy(ctx context.Context) (*string, error)
-	CreateJob(ctx context.Context, input models.CreateJobReq) (*model.Job, error)
-	CreateAccount(ctx context.Context, input models.CreateAccountReq) (*model1.Account, error)
+	CreateAccount(ctx context.Context, input models.CreateAccountReq) (*model.Account, error)
+	Auth(ctx context.Context, input models.AuthReq) (*models.AuthRes, error)
 }
 type QueryResolver interface {
 	Dummy(ctx context.Context) (*string, error)
@@ -135,19 +134,31 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Account.Username(childComplexity), true
 
-	case "Job.JobId":
-		if e.complexity.Job.JobId == nil {
+	case "AuthRes.Token":
+		if e.complexity.AuthRes.Token == nil {
 			break
 		}
 
-		return e.complexity.Job.JobId(childComplexity), true
+		return e.complexity.AuthRes.Token(childComplexity), true
 
-	case "Job.jobName":
-		if e.complexity.Job.JobName == nil {
+	case "AuthRes.Valid":
+		if e.complexity.AuthRes.Valid == nil {
 			break
 		}
 
-		return e.complexity.Job.JobName(childComplexity), true
+		return e.complexity.AuthRes.Valid(childComplexity), true
+
+	case "Mutation.Auth":
+		if e.complexity.Mutation.Auth == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_Auth_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.Auth(childComplexity, args["input"].(models.AuthReq)), true
 
 	case "Mutation.CreateAccount":
 		if e.complexity.Mutation.CreateAccount == nil {
@@ -160,18 +171,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.CreateAccount(childComplexity, args["input"].(models.CreateAccountReq)), true
-
-	case "Mutation.CreateJob":
-		if e.complexity.Mutation.CreateJob == nil {
-			break
-		}
-
-		args, err := ec.field_Mutation_CreateJob_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Mutation.CreateJob(childComplexity, args["input"].(models.CreateJobReq)), true
 
 	case "Mutation.dummy":
 		if e.complexity.Mutation.Dummy == nil {
@@ -257,32 +256,25 @@ var parsedSchema = gqlparser.MustLoadSchema(
   PasswordHash: String
   PasswordSalt: String
 }
-
 input CreateAccountReq {
-  Email: String
-  Username: String
-  Description: String
-  Password: String
+  Email: String!
+  Username: String!
+  Description: String!
+  PasswordHash: String!
 }
+
+type AuthRes {
+  Token: String
+  Valid: Boolean
+}
+input AuthReq {
+  Email: String
+  PasswordHash: String
+}
+
 extend type Mutation {
   CreateAccount(input: CreateAccountReq!): Account
-}
-`},
-	&ast.Source{Name: "schemas/job.graphql", Input: `type Job {
-  JobId: String
-  jobName: String
-}
-
-# extend type Query {
-# 	job: Job
-# }
-
-input CreateJobReq {
-	job_id: String
-	job_name: String
-}
-extend type Mutation {
-	CreateJob(input: CreateJobReq!): Job
+  Auth (input: AuthReq!): AuthRes
 }
 `},
 	&ast.Source{Name: "schemas/schema.graphql", Input: `scalar DateTime
@@ -306,12 +298,12 @@ extend schema {
 
 // region    ***************************** args.gotpl *****************************
 
-func (ec *executionContext) field_Mutation_CreateAccount_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Mutation_Auth_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 models.CreateAccountReq
+	var arg0 models.AuthReq
 	if tmp, ok := rawArgs["input"]; ok {
-		arg0, err = ec.unmarshalNCreateAccountReq2githubᚗcomᚋnirajgeorgianᚋgatewayᚋsrcᚋmodelsᚐCreateAccountReq(ctx, tmp)
+		arg0, err = ec.unmarshalNAuthReq2githubᚗcomᚋnirajgeorgianᚋgatewayᚋsrcᚋmodelsᚐAuthReq(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -320,12 +312,12 @@ func (ec *executionContext) field_Mutation_CreateAccount_args(ctx context.Contex
 	return args, nil
 }
 
-func (ec *executionContext) field_Mutation_CreateJob_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Mutation_CreateAccount_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 models.CreateJobReq
+	var arg0 models.CreateAccountReq
 	if tmp, ok := rawArgs["input"]; ok {
-		arg0, err = ec.unmarshalNCreateJobReq2githubᚗcomᚋnirajgeorgianᚋgatewayᚋsrcᚋmodelsᚐCreateJobReq(ctx, tmp)
+		arg0, err = ec.unmarshalNCreateAccountReq2githubᚗcomᚋnirajgeorgianᚋgatewayᚋsrcᚋmodelsᚐCreateAccountReq(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -384,7 +376,7 @@ func (ec *executionContext) field___Type_fields_args(ctx context.Context, rawArg
 
 // region    **************************** field.gotpl *****************************
 
-func (ec *executionContext) _Account_AccountId(ctx context.Context, field graphql.CollectedField, obj *model1.Account) (ret graphql.Marshaler) {
+func (ec *executionContext) _Account_AccountId(ctx context.Context, field graphql.CollectedField, obj *model.Account) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -418,7 +410,7 @@ func (ec *executionContext) _Account_AccountId(ctx context.Context, field graphq
 	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Account_Email(ctx context.Context, field graphql.CollectedField, obj *model1.Account) (ret graphql.Marshaler) {
+func (ec *executionContext) _Account_Email(ctx context.Context, field graphql.CollectedField, obj *model.Account) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -452,7 +444,7 @@ func (ec *executionContext) _Account_Email(ctx context.Context, field graphql.Co
 	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Account_Username(ctx context.Context, field graphql.CollectedField, obj *model1.Account) (ret graphql.Marshaler) {
+func (ec *executionContext) _Account_Username(ctx context.Context, field graphql.CollectedField, obj *model.Account) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -486,7 +478,7 @@ func (ec *executionContext) _Account_Username(ctx context.Context, field graphql
 	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Account_Description(ctx context.Context, field graphql.CollectedField, obj *model1.Account) (ret graphql.Marshaler) {
+func (ec *executionContext) _Account_Description(ctx context.Context, field graphql.CollectedField, obj *model.Account) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -520,7 +512,7 @@ func (ec *executionContext) _Account_Description(ctx context.Context, field grap
 	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Account_PasswordHash(ctx context.Context, field graphql.CollectedField, obj *model1.Account) (ret graphql.Marshaler) {
+func (ec *executionContext) _Account_PasswordHash(ctx context.Context, field graphql.CollectedField, obj *model.Account) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -554,7 +546,7 @@ func (ec *executionContext) _Account_PasswordHash(ctx context.Context, field gra
 	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Account_PasswordSalt(ctx context.Context, field graphql.CollectedField, obj *model1.Account) (ret graphql.Marshaler) {
+func (ec *executionContext) _Account_PasswordSalt(ctx context.Context, field graphql.CollectedField, obj *model.Account) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -588,7 +580,7 @@ func (ec *executionContext) _Account_PasswordSalt(ctx context.Context, field gra
 	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Job_JobId(ctx context.Context, field graphql.CollectedField, obj *model.Job) (ret graphql.Marshaler) {
+func (ec *executionContext) _AuthRes_Token(ctx context.Context, field graphql.CollectedField, obj *models.AuthRes) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -598,7 +590,7 @@ func (ec *executionContext) _Job_JobId(ctx context.Context, field graphql.Collec
 		ec.Tracer.EndFieldExecution(ctx)
 	}()
 	rctx := &graphql.ResolverContext{
-		Object:   "Job",
+		Object:   "AuthRes",
 		Field:    field,
 		Args:     nil,
 		IsMethod: false,
@@ -607,7 +599,7 @@ func (ec *executionContext) _Job_JobId(ctx context.Context, field graphql.Collec
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.JobId, nil
+		return obj.Token, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -616,13 +608,13 @@ func (ec *executionContext) _Job_JobId(ctx context.Context, field graphql.Collec
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*string)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalOString2string(ctx, field.Selections, res)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Job_jobName(ctx context.Context, field graphql.CollectedField, obj *model.Job) (ret graphql.Marshaler) {
+func (ec *executionContext) _AuthRes_Valid(ctx context.Context, field graphql.CollectedField, obj *models.AuthRes) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -632,7 +624,7 @@ func (ec *executionContext) _Job_jobName(ctx context.Context, field graphql.Coll
 		ec.Tracer.EndFieldExecution(ctx)
 	}()
 	rctx := &graphql.ResolverContext{
-		Object:   "Job",
+		Object:   "AuthRes",
 		Field:    field,
 		Args:     nil,
 		IsMethod: false,
@@ -641,7 +633,7 @@ func (ec *executionContext) _Job_jobName(ctx context.Context, field graphql.Coll
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.JobName, nil
+		return obj.Valid, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -650,10 +642,10 @@ func (ec *executionContext) _Job_jobName(ctx context.Context, field graphql.Coll
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*bool)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalOString2string(ctx, field.Selections, res)
+	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_dummy(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -688,47 +680,6 @@ func (ec *executionContext) _Mutation_dummy(ctx context.Context, field graphql.C
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
 	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _Mutation_CreateJob(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	ctx = ec.Tracer.StartFieldExecution(ctx, field)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-		ec.Tracer.EndFieldExecution(ctx)
-	}()
-	rctx := &graphql.ResolverContext{
-		Object:   "Mutation",
-		Field:    field,
-		Args:     nil,
-		IsMethod: true,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	rawArgs := field.ArgumentMap(ec.Variables)
-	args, err := ec.field_Mutation_CreateJob_args(ctx, rawArgs)
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	rctx.Args = args
-	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().CreateJob(rctx, args["input"].(models.CreateJobReq))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*model.Job)
-	rctx.Result = res
-	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalOJob2ᚖgithubᚗcomᚋnirajgeorgianᚋgatewayᚋvendorᚋgithubᚗcomᚋnirajgeorgianᚋjobᚋsrcᚋmodelᚐJob(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_CreateAccount(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -766,10 +717,51 @@ func (ec *executionContext) _Mutation_CreateAccount(ctx context.Context, field g
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*model1.Account)
+	res := resTmp.(*model.Account)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalOAccount2ᚖgithubᚗcomᚋnirajgeorgianᚋaccountᚋsrcᚋmodelᚐAccount(ctx, field.Selections, res)
+	return ec.marshalOAccount2ᚖgithubᚗcomᚋnirajgeorgianᚋgatewayᚋvendorᚋgithubᚗcomᚋnirajgeorgianᚋaccountᚋsrcᚋmodelᚐAccount(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_Auth(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Mutation",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_Auth_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	rctx.Args = args
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().Auth(rctx, args["input"].(models.AuthReq))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*models.AuthRes)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalOAuthRes2ᚖgithubᚗcomᚋnirajgeorgianᚋgatewayᚋsrcᚋmodelsᚐAuthRes(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query_dummy(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -2032,8 +2024,8 @@ func (ec *executionContext) ___Type_ofType(ctx context.Context, field graphql.Co
 
 // region    **************************** input.gotpl *****************************
 
-func (ec *executionContext) unmarshalInputCreateAccountReq(ctx context.Context, obj interface{}) (models.CreateAccountReq, error) {
-	var it models.CreateAccountReq
+func (ec *executionContext) unmarshalInputAuthReq(ctx context.Context, obj interface{}) (models.AuthReq, error) {
+	var it models.AuthReq
 	var asMap = obj.(map[string]interface{})
 
 	for k, v := range asMap {
@@ -2044,21 +2036,9 @@ func (ec *executionContext) unmarshalInputCreateAccountReq(ctx context.Context, 
 			if err != nil {
 				return it, err
 			}
-		case "Username":
+		case "PasswordHash":
 			var err error
-			it.Username, err = ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Description":
-			var err error
-			it.Description, err = ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Password":
-			var err error
-			it.Password, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.PasswordHash, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -2068,21 +2048,33 @@ func (ec *executionContext) unmarshalInputCreateAccountReq(ctx context.Context, 
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputCreateJobReq(ctx context.Context, obj interface{}) (models.CreateJobReq, error) {
-	var it models.CreateJobReq
+func (ec *executionContext) unmarshalInputCreateAccountReq(ctx context.Context, obj interface{}) (models.CreateAccountReq, error) {
+	var it models.CreateAccountReq
 	var asMap = obj.(map[string]interface{})
 
 	for k, v := range asMap {
 		switch k {
-		case "job_id":
+		case "Email":
 			var err error
-			it.JobID, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.Email, err = ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
-		case "job_name":
+		case "Username":
 			var err error
-			it.JobName, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.Username, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Description":
+			var err error
+			it.Description, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "PasswordHash":
+			var err error
+			it.PasswordHash, err = ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -2102,7 +2094,7 @@ func (ec *executionContext) unmarshalInputCreateJobReq(ctx context.Context, obj 
 
 var accountImplementors = []string{"Account"}
 
-func (ec *executionContext) _Account(ctx context.Context, sel ast.SelectionSet, obj *model1.Account) graphql.Marshaler {
+func (ec *executionContext) _Account(ctx context.Context, sel ast.SelectionSet, obj *model.Account) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.RequestContext, sel, accountImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -2134,21 +2126,21 @@ func (ec *executionContext) _Account(ctx context.Context, sel ast.SelectionSet, 
 	return out
 }
 
-var jobImplementors = []string{"Job"}
+var authResImplementors = []string{"AuthRes"}
 
-func (ec *executionContext) _Job(ctx context.Context, sel ast.SelectionSet, obj *model.Job) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.RequestContext, sel, jobImplementors)
+func (ec *executionContext) _AuthRes(ctx context.Context, sel ast.SelectionSet, obj *models.AuthRes) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.RequestContext, sel, authResImplementors)
 
 	out := graphql.NewFieldSet(fields)
 	var invalids uint32
 	for i, field := range fields {
 		switch field.Name {
 		case "__typename":
-			out.Values[i] = graphql.MarshalString("Job")
-		case "JobId":
-			out.Values[i] = ec._Job_JobId(ctx, field, obj)
-		case "jobName":
-			out.Values[i] = ec._Job_jobName(ctx, field, obj)
+			out.Values[i] = graphql.MarshalString("AuthRes")
+		case "Token":
+			out.Values[i] = ec._AuthRes_Token(ctx, field, obj)
+		case "Valid":
+			out.Values[i] = ec._AuthRes_Valid(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -2177,10 +2169,10 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			out.Values[i] = graphql.MarshalString("Mutation")
 		case "dummy":
 			out.Values[i] = ec._Mutation_dummy(ctx, field)
-		case "CreateJob":
-			out.Values[i] = ec._Mutation_CreateJob(ctx, field)
 		case "CreateAccount":
 			out.Values[i] = ec._Mutation_CreateAccount(ctx, field)
+		case "Auth":
+			out.Values[i] = ec._Mutation_Auth(ctx, field)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -2478,6 +2470,10 @@ func (ec *executionContext) ___Type(ctx context.Context, sel ast.SelectionSet, o
 
 // region    ***************************** type.gotpl *****************************
 
+func (ec *executionContext) unmarshalNAuthReq2githubᚗcomᚋnirajgeorgianᚋgatewayᚋsrcᚋmodelsᚐAuthReq(ctx context.Context, v interface{}) (models.AuthReq, error) {
+	return ec.unmarshalInputAuthReq(ctx, v)
+}
+
 func (ec *executionContext) unmarshalNBoolean2bool(ctx context.Context, v interface{}) (bool, error) {
 	return graphql.UnmarshalBoolean(v)
 }
@@ -2494,10 +2490,6 @@ func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.Se
 
 func (ec *executionContext) unmarshalNCreateAccountReq2githubᚗcomᚋnirajgeorgianᚋgatewayᚋsrcᚋmodelsᚐCreateAccountReq(ctx context.Context, v interface{}) (models.CreateAccountReq, error) {
 	return ec.unmarshalInputCreateAccountReq(ctx, v)
-}
-
-func (ec *executionContext) unmarshalNCreateJobReq2githubᚗcomᚋnirajgeorgianᚋgatewayᚋsrcᚋmodelsᚐCreateJobReq(ctx context.Context, v interface{}) (models.CreateJobReq, error) {
-	return ec.unmarshalInputCreateJobReq(ctx, v)
 }
 
 func (ec *executionContext) unmarshalNString2string(ctx context.Context, v interface{}) (string, error) {
@@ -2740,15 +2732,26 @@ func (ec *executionContext) marshalN__TypeKind2string(ctx context.Context, sel a
 	return res
 }
 
-func (ec *executionContext) marshalOAccount2githubᚗcomᚋnirajgeorgianᚋaccountᚋsrcᚋmodelᚐAccount(ctx context.Context, sel ast.SelectionSet, v model1.Account) graphql.Marshaler {
+func (ec *executionContext) marshalOAccount2githubᚗcomᚋnirajgeorgianᚋgatewayᚋvendorᚋgithubᚗcomᚋnirajgeorgianᚋaccountᚋsrcᚋmodelᚐAccount(ctx context.Context, sel ast.SelectionSet, v model.Account) graphql.Marshaler {
 	return ec._Account(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalOAccount2ᚖgithubᚗcomᚋnirajgeorgianᚋaccountᚋsrcᚋmodelᚐAccount(ctx context.Context, sel ast.SelectionSet, v *model1.Account) graphql.Marshaler {
+func (ec *executionContext) marshalOAccount2ᚖgithubᚗcomᚋnirajgeorgianᚋgatewayᚋvendorᚋgithubᚗcomᚋnirajgeorgianᚋaccountᚋsrcᚋmodelᚐAccount(ctx context.Context, sel ast.SelectionSet, v *model.Account) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._Account(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalOAuthRes2githubᚗcomᚋnirajgeorgianᚋgatewayᚋsrcᚋmodelsᚐAuthRes(ctx context.Context, sel ast.SelectionSet, v models.AuthRes) graphql.Marshaler {
+	return ec._AuthRes(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalOAuthRes2ᚖgithubᚗcomᚋnirajgeorgianᚋgatewayᚋsrcᚋmodelsᚐAuthRes(ctx context.Context, sel ast.SelectionSet, v *models.AuthRes) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._AuthRes(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalOBoolean2bool(ctx context.Context, v interface{}) (bool, error) {
@@ -2772,17 +2775,6 @@ func (ec *executionContext) marshalOBoolean2ᚖbool(ctx context.Context, sel ast
 		return graphql.Null
 	}
 	return ec.marshalOBoolean2bool(ctx, sel, *v)
-}
-
-func (ec *executionContext) marshalOJob2githubᚗcomᚋnirajgeorgianᚋgatewayᚋvendorᚋgithubᚗcomᚋnirajgeorgianᚋjobᚋsrcᚋmodelᚐJob(ctx context.Context, sel ast.SelectionSet, v model.Job) graphql.Marshaler {
-	return ec._Job(ctx, sel, &v)
-}
-
-func (ec *executionContext) marshalOJob2ᚖgithubᚗcomᚋnirajgeorgianᚋgatewayᚋvendorᚋgithubᚗcomᚋnirajgeorgianᚋjobᚋsrcᚋmodelᚐJob(ctx context.Context, sel ast.SelectionSet, v *model.Job) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	return ec._Job(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalOString2string(ctx context.Context, v interface{}) (string, error) {

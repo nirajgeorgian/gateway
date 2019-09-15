@@ -5,7 +5,6 @@
 
 schema:
   - schemas/schema.graphql
-  - schemas/job.graphql
   - schemas/account.graphql
 
 # Let gqlgen know where to put the generated server
@@ -18,17 +17,15 @@ model:
   filename: models/generated.go
   package: models
 
-# # Optional, turns on binding to field names by tag provided
-# struct_tag: json
-#
+# Optional, turns on binding to field names by tag provided
+struct_tag: json
+
 # # Let gqlgen know where to put the generated resolvers
 # resolver:
 #   filename: gql/resolvers/generated.go
 #   type: Resolver
 #   package: resolvers
 models:
-  Job:
-    model: github.com/nirajgeorgian/job/src/model.Job
   Account:
     model: github.com/nirajgeorgian/account/src/model.Account
   ID:

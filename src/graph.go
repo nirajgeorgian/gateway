@@ -2,22 +2,16 @@ package gateway
 
 import (
   "context"
-  "time"
 
-  "github.com/pkg/errors"
-  "google.golang.org/grpc"
   "github.com/spf13/viper"
   "github.com/99designs/gqlgen/graphql"
 
-  api "github.com/nirajgeorgian/account/src/api"
+  accountapi "github.com/nirajgeorgian/account/src/api"
 )
 
 type GatewayServer struct {
-  JobSvcAddr string
-  JobClient *grpc.ClientConn
-
   AccountSvcAddr string
-  AccountClient *api.Client
+  AccountClient *accountapi.Client
 }
 
 func NewGraphQLServer(ctx context.Context) (*GatewayServer, error) {
@@ -25,28 +19,13 @@ func NewGraphQLServer(ctx context.Context) (*GatewayServer, error) {
   svc := new(GatewayServer)
 
   svc.AccountSvcAddr = viper.GetString("accounturi")
-  svc.JobSvcAddr = viper.GetString("joburi")
-
-  // mustConnGRPC(ctx, &svc.AccountClient, svc.AccountSvcAddr)
-  accountClient, err := api.NewClient(svc.AccountSvcAddr)
+  accountClient, err := accountapi.NewClient(svc.AccountSvcAddr)
   if err != nil {
 		return nil, err
 	}
   svc.AccountClient = accountClient
-  mustConnGRPC(ctx, &svc.JobClient, svc.JobSvcAddr)
 
   return svc, nil
-}
-
-func mustConnGRPC(ctx context.Context, conn **grpc.ClientConn, addr string) {
-	var err error
-	*conn, err = grpc.DialContext(ctx, addr,
-		grpc.WithInsecure(),
-		grpc.WithTimeout(time.Second*3),
-  )
-	if err != nil {
-		panic(errors.Wrapf(err, "grpc: failed to connect %s", addr))
-	}
 }
 
 func (s *GatewayServer) Mutation() MutationResolver {
@@ -60,12 +39,6 @@ func (s *GatewayServer) Query() QueryResolver {
    server: s,
  }
 }
-
-// func (s *GatewayServer) Account() AccountResolver {
-//   return &accountResolver{
-//     server: s,
-//   }
-// }
 
 func (s *GatewayServer) ToExecutableSchema() graphql.ExecutableSchema {
   return NewExecutableSchema(Config{
