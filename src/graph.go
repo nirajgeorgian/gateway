@@ -8,6 +8,8 @@ import (
   "google.golang.org/grpc"
   "github.com/spf13/viper"
   "github.com/99designs/gqlgen/graphql"
+
+  api "github.com/nirajgeorgian/account/src/api"
 )
 
 type GatewayServer struct {
@@ -15,7 +17,7 @@ type GatewayServer struct {
   JobClient *grpc.ClientConn
 
   AccountSvcAddr string
-  AccountClient *grpc.ClientConn
+  AccountClient *api.Client
 }
 
 func NewGraphQLServer(ctx context.Context) (*GatewayServer, error) {
@@ -25,7 +27,12 @@ func NewGraphQLServer(ctx context.Context) (*GatewayServer, error) {
   svc.AccountSvcAddr = viper.GetString("accounturi")
   svc.JobSvcAddr = viper.GetString("joburi")
 
-  mustConnGRPC(ctx, &svc.AccountClient, svc.AccountSvcAddr)
+  // mustConnGRPC(ctx, &svc.AccountClient, svc.AccountSvcAddr)
+  accountClient, err := api.NewClient(svc.AccountSvcAddr)
+  if err != nil {
+		return nil, err
+	}
+  svc.AccountClient = accountClient
   mustConnGRPC(ctx, &svc.JobClient, svc.JobSvcAddr)
 
   return svc, nil

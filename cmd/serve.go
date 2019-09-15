@@ -23,7 +23,7 @@ var AccountURI string
 var JobURI string
 
 func init() {
-	serveCmd.Flags().IntVarP(&Port, "port", "p", 3000, "port configuration for this application")
+	serveCmd.Flags().IntVarP(&Port, "port", "p", 8080, "port configuration for this application")
 	serveCmd.Flags().StringVarP(&AccountURI, "accounturi", "a", "localhost:3001", "URI for account service (required)")
 	serveCmd.Flags().StringVarP(&JobURI, "joburi", "j", "localhost:3000", "URI for job service (required)")
 

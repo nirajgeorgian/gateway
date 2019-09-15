@@ -4,7 +4,7 @@ import (
   "context"
   "errors"
   "time"
-  _ "log"
+  "log"
 
   models "github.com/nirajgeorgian/gateway/src/models"
 
@@ -33,14 +33,14 @@ func (r *mutationResolver)	Dummy(ctx context.Context) (*string, error)  {
 }
 
 func (r *mutationResolver) CreateAccount(ctx context.Context, in models.CreateAccountReq) (*account.Account, error) {
-  // ctx, cancel := context.WithTimeout(ctx, 3*time.Second)
-  // defer cancel()
-  //
-  // acc := &account.Account{Email: *in.Email}
-  // _, err := accountapi.NewAccountServiceClient(s.).CreateAccount(ctx, &accountapi.CreateAccountReq{Account: acc})
-  // if err != nil {
-  //   log.Fatalf("could not greet: %v", err)
-  // }
+  ctx, cancel := context.WithTimeout(ctx, 3*time.Second)
+  defer cancel()
+
+  acc := &account.Account{Email: *in.Email}
+  _, err := r.server.AccountClient.CreateAccount(ctx, *acc)
+  if err != nil {
+    log.Fatalf("could not greet: %v", err)
+  }
 
   return &account.Account{
     Email:   *in.Email,
