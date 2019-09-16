@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gateway-deployment
+  labels:
+    app: gateway
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: gateway
+  template:
+    metadata:
+      labels:
+        app: gateway
+    spec:
+      containers:
+        - name: gateway
+          image: nirajgeorgian/gateway:latest
+          ports:
+            - name: gateway-service
+              containerPort: 8080
+          env:
+            - name: ACCOUNTURI
+              value: "account-service:3001"
+            - name: PORT
+              value: "8080"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gateway-service
+spec:
+  selector:
+    app: gateway
+  ports:
+    - name: http
+      port: 8080
+      nodePort: 30080
+  type: NodePort
