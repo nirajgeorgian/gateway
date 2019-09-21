@@ -6,6 +6,7 @@
 schema:
   - schemas/schema.graphql
   - schemas/account.graphql
+  - schemas/job.graphql
 
 # Let gqlgen know where to put the generated server
 exec:
@@ -28,6 +29,12 @@ struct_tag: json
 models:
   Account:
     model: github.com/nirajgeorgian/account/src/model.Account
+  Sallary:
+    model: github.com/nirajgeorgian/job/src/model.Sallary
+  Attachment:
+    model: github.com/nirajgeorgian/job/src/model.Attachment
+  Job:
+    model: github.com/nirajgeorgian/job/src/model.Job
   ID:
     model:
       - github.com/99designs/gqlgen/graphql.IntID
