@@ -5,7 +5,7 @@ metadata:
   labels:
     app: gateway
 spec:
-  replicas: 5
+  replicas: 3
   selector:
     matchLabels:
       app: gateway
@@ -23,6 +23,8 @@ spec:
           env:
             - name: ACCOUNTURI
               value: "account-service:3001"
+            - name: JOBURI
+              value: "job-service:3000"
             - name: PORT
               value: "8080"
 
