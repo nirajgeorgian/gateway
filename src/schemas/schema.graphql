@@ -1,16 +1,7 @@
 scalar DateTime
 scalar Date
 
-interface INode {
-	CreatedAt: String
-	UpdatedAt: String
-}
-
 # basic type for paging and filtering
-type Edge {
-	cursor: String!
-	node: [Node!]!
-}
 type PageInfo {
 	endCursor: String!
 	hasNextPage: Boolean!

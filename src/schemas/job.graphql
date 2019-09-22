@@ -1,16 +1,3 @@
-enum JobType {
-  DEFAULT
-	FEATURED
-	PREMIUM
-}
-enum JobStatus {
-  ACTIVE
-  HOLD
-  EXPIRED
-  CLOSED
-  URGENT
-}
-
 type Sallary {
   Value: Int!
   Currency: String!
@@ -18,11 +5,10 @@ type Sallary {
 type Attachment {
   Type: String!
   Value: String!
-  CreatedAt: String
 }
 
-type Job implements INode {
-  JobId: String!
+type Job {
+  JobId: ID!
   JobName: String!
   JobDescription: String!
   JobCategory: String!
@@ -32,8 +18,8 @@ type Job implements INode {
   SkillsRequired: [String!]
   UsersApplied: [String!]
   JobAttachment: [Attachment]
-  JobType: JobType!
-  JobStatus: JobStatus!
+  JobType: Int!
+  JobStatus: Int!
   MinSallary: Sallary!
   MaxSallary: Sallary!
 }
@@ -43,10 +29,10 @@ input AttachmentInput {
   Value: String!
 }
 input SallaryInput {
-  Value: String!
+  Value: Int!
   Currency: String!
 }
-input JobReq {
+input CreateJobReq {
   JobName: String!
   JobDescription: String!
   JobCategory: String!
@@ -55,12 +41,12 @@ input JobReq {
   SkillsRequired: [String!]
   UsersApplied: [String!]
   JobAttachment: [AttachmentInput]
-  JobType: JobType!
-  JobStatus: JobStatus!
+  JobType: Int!
+  JobStatus: Int!
   MinSallary: SallaryInput!
   MaxSallary: SallaryInput!
 }
 
 extend type Mutation {
-  CreateJob(input: JobReq!): Job
+  CreateJob(input: CreateJobReq!): Job
 }

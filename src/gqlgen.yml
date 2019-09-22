@@ -26,15 +26,11 @@ struct_tag: json
 #   filename: gql/resolvers/generated.go
 #   type: Resolver
 #   package: resolvers
+autobind:
+  - github.com/nirajgeorgian/job/src/model
+  - github.com/nirajgeorgian/account/src/model
+
 models:
-  Account:
-    model: github.com/nirajgeorgian/account/src/model.Account
-  Sallary:
-    model: github.com/nirajgeorgian/job/src/model.Sallary
-  Attachment:
-    model: github.com/nirajgeorgian/job/src/model.Attachment
-  Job:
-    model: github.com/nirajgeorgian/job/src/model.Job
   ID:
     model:
       - github.com/99designs/gqlgen/graphql.IntID

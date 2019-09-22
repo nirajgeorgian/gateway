@@ -27,6 +27,14 @@
   version = "v0.9.3"
 
 [[projects]]
+  digest = "1:04457f9f6f3ffc5fea48e71d62f2ca256637dee0a04d710288e27e05c8b41976"
+  name = "github.com/Sirupsen/logrus"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "839c75faf7f98a33d445d181f3018b5c3409a45e"
+  version = "v1.4.2"
+
+[[projects]]
   digest = "1:786e862ec180708b60ee670723e3edd969fd4309e7b1c315cd7de058ac62a011"
   name = "github.com/agnivade/levenshtein"
   packages = ["."]
@@ -88,7 +96,7 @@
     "ptypes/timestamp",
   ]
   pruneopts = "UT"
-  revision = "822fe56949f5d56c9e2f02367c657e0e9b4d27d1"
+  revision = "1680a479a2cfb3fa22b972af7e36d0a0fde47bf8"
 
 [[projects]]
   digest = "1:e62657cca9badaa308d86e7716083e4c5933bb78e30a17743fc67f50be26f6f4"
@@ -99,12 +107,23 @@
   version = "v1.4.1"
 
 [[projects]]
-  digest = "1:e378ba3519db01a2a1634fb4891dd5a4cb8230d76c977a22e8d5ed8551a0804e"
+  digest = "1:cb1199ff0e752cc52b60be0204dfa51d8c12d1f2e329e0dec636fc22eeffc2d8"
+  name = "github.com/grpc-ecosystem/go-grpc-middleware"
+  packages = [
+    ".",
+    "recovery",
+  ]
+  pruneopts = "UT"
+  revision = "dd15ed025b6054e5253963e355991f3070d4e593"
+  version = "v1.1.0"
+
+[[projects]]
+  digest = "1:29927baa59f4d7553df89dc19290c709f358df0f8063bcea1594bf5f07708287"
   name = "github.com/grpc-ecosystem/grpc-gateway"
   packages = ["protoc-gen-swagger/options"]
   pruneopts = "UT"
-  revision = "471f45a5a99a578de7a8638dc7ed29e245bde097"
-  version = "v1.11.1"
+  revision = "2dfdd971e2e70fb436ffcdf845b7313c43606848"
+  version = "v1.11.2"
 
 [[projects]]
   digest = "1:c77361e611524ec8f2ad37c408c3c916111a70b6acf806a1200855696bf8fa4d"
@@ -190,6 +209,14 @@
   version = "v1.0.0"
 
 [[projects]]
+  digest = "1:31e761d97c76151dde79e9d28964a812c46efc5baee4085b86f68f0c654450de"
+  name = "github.com/konsorten/go-windows-terminal-sequences"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "f55edac94c9bbba5d6182a4be46d86a2c9b5b50e"
+  version = "v1.0.2"
+
+[[projects]]
   digest = "1:0ead8e64fe356bd9221605e3ec40b4438509868018cbbbaaaff3ebae1b69b78b"
   name = "github.com/lib/pq"
   packages = [
@@ -220,7 +247,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:b013e45e055bd2d5207d961403eae1e72bb52f521dabd2791c2e91891698a9ea"
+  digest = "1:a53dbfceda2cacb327bf958cbfe3bc05cf7b24305e4a12e769d1bfddf074074a"
   name = "github.com/nirajgeorgian/account"
   packages = [
     "src/api",
@@ -229,7 +256,22 @@
     "src/model",
   ]
   pruneopts = "UT"
-  revision = "28a5b381fbc5b59069f467cfb86ccd46005c3446"
+  revision = "fbb8fca2e9a0d505d6e10c73ccb9e214458078fd"
+
+[[projects]]
+  branch = "master"
+  digest = "1:8b63440de64b2280aea60c41242a307a9a253e8b3470380abdbc74cc988a94b4"
+  name = "github.com/nirajgeorgian/job"
+  packages = [
+    ".",
+    "cmd",
+    "src/api",
+    "src/app",
+    "src/db",
+    "src/model",
+  ]
+  pruneopts = "UT"
+  revision = "dddb4cd82a1c20a36c1f36e7020635a74c3f7c30"
 
 [[projects]]
   digest = "1:93131d8002d7025da13582877c32d1fc302486775a1b06f62241741006428c5e"
@@ -307,12 +349,12 @@
   version = "v1.1.0"
 
 [[projects]]
-  digest = "1:c1b1102241e7f645bc8e0c22ae352e8f0dc6484b6cb4d132fa9f24174e0119e2"
+  digest = "1:524b71991fc7d9246cc7dc2d9e0886ccb97648091c63e30eef619e6862c955dd"
   name = "github.com/spf13/pflag"
   packages = ["."]
   pruneopts = "UT"
-  revision = "298182f68c66c05229eb03ac171abe6e309ee79a"
-  version = "v1.0.3"
+  revision = "2e9d26c8c37aae03e3f9d4e90b7116f5accb7cab"
+  version = "v1.0.5"
 
 [[projects]]
   digest = "1:11118bd196646c6515fea3d6c43f66162833c6ae4939bfb229b9956d91c6cf17"
@@ -371,15 +413,15 @@
     "trace",
   ]
   pruneopts = "UT"
-  revision = "24e19bdeb0f2d062d8e2640d50a7aaf2a7f80e7a"
+  revision = "1a5e07d1ff72da30f660d3c95b312a20be31173c"
 
 [[projects]]
   branch = "master"
-  digest = "1:31ca8823684b4b0c204df1d4a9f3c511f41cc3e7ab6decc2ca5ffacc358d2818"
+  digest = "1:efaeaf7e03393d54963ece1e4c1866915d712a07adf4be8ea8105a67e3418e8f"
   name = "golang.org/x/sys"
   packages = ["unix"]
   pruneopts = "UT"
-  revision = "c3b328c6e5a763a2bfc82a48b4bd855037210934"
+  revision = "ef0ce1748380fdf001bd0ff86a45329a12945357"
 
 [[projects]]
   digest = "1:8d8faad6b12a3a4c819a3f9618cb6ee1fa1cfc33253abeeea8b55336721e3405"
@@ -408,7 +450,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:4d07cfa65b1661b24c43340cb1b8f5721caef6216917f0c59aff23e498c5d7b3"
+  digest = "1:629a44e89cce8a4849ea4dfee1ac9fe25e8a1b7d6c2f8a01ca83b38eadce0317"
   name = "golang.org/x/tools"
   packages = [
     "go/ast/astutil",
@@ -425,7 +467,7 @@
     "internal/semver",
   ]
   pruneopts = "UT"
-  revision = "31e00f45c22e7b8b4b5a004fd8a01c664f7b175b"
+  revision = "5eefd052ad727afc5e2e7b034c752b9d3d902b3b"
 
 [[projects]]
   branch = "master"
@@ -437,7 +479,7 @@
     "protobuf/field_mask",
   ]
   pruneopts = "UT"
-  revision = "1774047e7e5133fa3573a4e51b37a586b6b0360c"
+  revision = "f660b865573183437d2d868f703fe88bb8af0b55"
 
 [[projects]]
   digest = "1:d7c803dfed573e0ce575cb2f259ea77418523c7fb8fb0940129fe7e8034ba43c"
@@ -501,6 +543,7 @@
     "github.com/99designs/gqlgen/handler",
     "github.com/nirajgeorgian/account/src/api",
     "github.com/nirajgeorgian/account/src/model",
+    "github.com/nirajgeorgian/job",
     "github.com/spf13/cobra",
     "github.com/spf13/viper",
     "github.com/vektah/gqlparser",
