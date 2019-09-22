@@ -2,6 +2,11 @@
 
 package models
 
+type AttachmentInput struct {
+	Type  string `json:"Type"`
+	Value string `json:"Value"`
+}
+
 type AuthReq struct {
 	Email        *string `json:"Email"`
 	PasswordHash *string `json:"PasswordHash"`
@@ -17,4 +22,29 @@ type CreateAccountReq struct {
 	Username     string `json:"Username"`
 	Description  string `json:"Description"`
 	PasswordHash string `json:"PasswordHash"`
+}
+
+type CreateJobReq struct {
+	JobName        string             `json:"JobName"`
+	JobDescription string             `json:"JobDescription"`
+	JobCategory    string             `json:"JobCategory"`
+	Location       *string            `json:"Location"`
+	JobTag         []string           `json:"JobTag"`
+	SkillsRequired []string           `json:"SkillsRequired"`
+	UsersApplied   []string           `json:"UsersApplied"`
+	JobAttachment  []*AttachmentInput `json:"JobAttachment"`
+	JobType        int                `json:"JobType"`
+	JobStatus      int                `json:"JobStatus"`
+	MinSallary     *SallaryInput      `json:"MinSallary"`
+	MaxSallary     *SallaryInput      `json:"MaxSallary"`
+}
+
+type PageInfo struct {
+	EndCursor   string `json:"endCursor"`
+	HasNextPage bool   `json:"hasNextPage"`
+}
+
+type SallaryInput struct {
+	Value    int    `json:"Value"`
+	Currency string `json:"Currency"`
 }
