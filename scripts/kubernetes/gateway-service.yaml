@@ -17,6 +17,7 @@ spec:
       containers:
         - name: gateway
           image: nirajgeorgian/gateway:latest
+          imagePullPolicy: "Always"
           ports:
             - name: gateway-service
               containerPort: 8080
