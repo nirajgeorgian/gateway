@@ -67,7 +67,7 @@
   version = "v1.4.7"
 
 [[projects]]
-  digest = "1:877b9eedd8a92d456a213fe85fb8c6d178cb2bc499e86ec5b7f0bcc05d121e54"
+  digest = "1:e20a9d6598878d629e04541d96076bf232c1ee36f6b267c4a5dae7779f15c36a"
   name = "github.com/gogo/protobuf"
   packages = [
     "gogoproto",
@@ -75,8 +75,8 @@
     "protoc-gen-gogo/descriptor",
   ]
   pruneopts = "UT"
-  revision = "0ca988a254f991240804bf9821f3450d87ccbb1b"
-  version = "v1.3.0"
+  revision = "5628607bb4c51c3157aacc3a50f0ab707582b805"
+  version = "v1.3.1"
 
 [[projects]]
   branch = "master"
@@ -122,8 +122,8 @@
   name = "github.com/grpc-ecosystem/grpc-gateway"
   packages = ["protoc-gen-swagger/options"]
   pruneopts = "UT"
-  revision = "2dfdd971e2e70fb436ffcdf845b7313c43606848"
-  version = "v1.11.2"
+  revision = "ece8fdf051b731392b407fdb9a9b1b9ffb6f9793"
+  version = "v1.11.3"
 
 [[projects]]
   digest = "1:c77361e611524ec8f2ad37c408c3c916111a70b6acf806a1200855696bf8fa4d"
@@ -190,15 +190,15 @@
   version = "v0.18.0"
 
 [[projects]]
-  digest = "1:da6718abe4d47b1132d98bf3f9b18e302d537bf6daf02bd40804d9295a3f32bd"
+  digest = "1:a0216296da5c3191358b114fa8d2490477f5dff7380541551495b4f2a16989b3"
   name = "github.com/jinzhu/gorm"
   packages = [
     ".",
     "dialects/postgres",
   ]
   pruneopts = "UT"
-  revision = "836fb2c19d84dac7b0272958dfb9af7cf0d0ade4"
-  version = "v1.9.10"
+  revision = "81c17a7e2529c59efc4e74c5b32c1fb71fb12fa2"
+  version = "v1.9.11"
 
 [[projects]]
   digest = "1:01ed62f8f4f574d8aff1d88caee113700a2b44c42351943fa73cc1808f736a50"
@@ -247,7 +247,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:a53dbfceda2cacb327bf958cbfe3bc05cf7b24305e4a12e769d1bfddf074074a"
+  digest = "1:c7dc3a75bed9834c54a89bd429b426bf657670bc82d1277b0d35c16f7ab612c3"
   name = "github.com/nirajgeorgian/account"
   packages = [
     "src/api",
@@ -256,30 +256,28 @@
     "src/model",
   ]
   pruneopts = "UT"
-  revision = "fbb8fca2e9a0d505d6e10c73ccb9e214458078fd"
+  revision = "b48ae71699c8e27890a3b13b5bfccd2e36342d2d"
 
 [[projects]]
   branch = "master"
-  digest = "1:8b63440de64b2280aea60c41242a307a9a253e8b3470380abdbc74cc988a94b4"
+  digest = "1:fb49ae4c2624076bc83f29bc0d59db524889e8a983c584fe18d603a876310e26"
   name = "github.com/nirajgeorgian/job"
   packages = [
-    ".",
-    "cmd",
     "src/api",
     "src/app",
     "src/db",
     "src/model",
   ]
   pruneopts = "UT"
-  revision = "dddb4cd82a1c20a36c1f36e7020635a74c3f7c30"
+  revision = "5baa39428e8bd70ba7703e5000661b03ba9b2253"
 
 [[projects]]
-  digest = "1:93131d8002d7025da13582877c32d1fc302486775a1b06f62241741006428c5e"
+  digest = "1:bbd3997f0121200f72b64d7a3826eb8a0b910d6a4c19894c9fe2852b9e5eaf3b"
   name = "github.com/pelletier/go-toml"
   packages = ["."]
   pruneopts = "UT"
-  revision = "728039f679cbcd4f6a54e080d2219a4c4928c546"
-  version = "v1.4.0"
+  revision = "8fe62057ea2d46ce44254c98e84e810044dbe197"
+  version = "v1.5.0"
 
 [[projects]]
   digest = "1:cf31692c14422fa27c83a05292eb5cbe0fb2775972e8f1f8446a71549bd8980b"
@@ -397,11 +395,11 @@
     "blowfish",
   ]
   pruneopts = "UT"
-  revision = "227b76d455e791cb042b03e633e2f7fbcfdf74a5"
+  revision = "87dc89f01550277dc22b74ffcf4cd89fa2f40f4c"
 
 [[projects]]
   branch = "master"
-  digest = "1:970a34b46fc4d6dcea441fb2f1419c40fa47fd53fc800bbf0951efda11d99df7"
+  digest = "1:c124e945335a9c62ede3a565f3198c5ae9a5ecc39fddd85871138362d128fb74"
   name = "golang.org/x/net"
   packages = [
     "context",
@@ -413,15 +411,15 @@
     "trace",
   ]
   pruneopts = "UT"
-  revision = "1a5e07d1ff72da30f660d3c95b312a20be31173c"
+  revision = "da9a3fd4c5820e74b24a6cb7fb438dc9b0dd377c"
 
 [[projects]]
   branch = "master"
-  digest = "1:efaeaf7e03393d54963ece1e4c1866915d712a07adf4be8ea8105a67e3418e8f"
+  digest = "1:1b4659321ce4f2c003bd052a71087f420a949690fe6b08772709099035c07eaa"
   name = "golang.org/x/sys"
   packages = ["unix"]
   pruneopts = "UT"
-  revision = "ef0ce1748380fdf001bd0ff86a45329a12945357"
+  revision = "727590c5006e77ca5247972f47e877f4929fc985"
 
 [[projects]]
   digest = "1:8d8faad6b12a3a4c819a3f9618cb6ee1fa1cfc33253abeeea8b55336721e3405"
@@ -450,7 +448,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:629a44e89cce8a4849ea4dfee1ac9fe25e8a1b7d6c2f8a01ca83b38eadce0317"
+  digest = "1:652982a5f8ecd4d5b2628668df8fee776d1fd416b3c24cbdf3a97b786c5bf7e8"
   name = "golang.org/x/tools"
   packages = [
     "go/ast/astutil",
@@ -465,9 +463,10 @@
     "internal/imports",
     "internal/module",
     "internal/semver",
+    "internal/span",
   ]
   pruneopts = "UT"
-  revision = "5eefd052ad727afc5e2e7b034c752b9d3d902b3b"
+  revision = "ed542cd5b28ad1b474f8ff7ca112cad2c3ac2dc8"
 
 [[projects]]
   branch = "master"
@@ -479,10 +478,10 @@
     "protobuf/field_mask",
   ]
   pruneopts = "UT"
-  revision = "f660b865573183437d2d868f703fe88bb8af0b55"
+  revision = "548a555dbc03994223efbaba0090152849259498"
 
 [[projects]]
-  digest = "1:d7c803dfed573e0ce575cb2f259ea77418523c7fb8fb0940129fe7e8034ba43c"
+  digest = "1:e08cc9bc357a312934182fd62bec22383a120786f3ce47f1a41787e7fe26b45c"
   name = "google.golang.org/grpc"
   packages = [
     ".",
@@ -522,16 +521,16 @@
     "tap",
   ]
   pruneopts = "UT"
-  revision = "39e8a7b072a67ca2a75f57fa2e0d50995f5b22f6"
-  version = "v1.23.1"
+  revision = "f6d0f9ee430895e87ef1ceb5ac8f39725bafceef"
+  version = "v1.24.0"
 
 [[projects]]
-  digest = "1:4d2e5a73dc1500038e504a8d78b986630e3626dc027bc030ba5c75da257cdb96"
+  digest = "1:59f10c1537d2199d9115d946927fe31165959a95190849c82ff11e05803528b0"
   name = "gopkg.in/yaml.v2"
   packages = ["."]
   pruneopts = "UT"
-  revision = "51d6538a90f86fe93ac480b35f37b2be17fef232"
-  version = "v2.2.2"
+  revision = "f221b8435cfb71e54062f6c6e99e9ade30b124d5"
+  version = "v2.2.4"
 
 [solve-meta]
   analyzer-name = "dep"
@@ -543,7 +542,8 @@
     "github.com/99designs/gqlgen/handler",
     "github.com/nirajgeorgian/account/src/api",
     "github.com/nirajgeorgian/account/src/model",
-    "github.com/nirajgeorgian/job",
+    "github.com/nirajgeorgian/job/src/api",
+    "github.com/nirajgeorgian/job/src/model",
     "github.com/spf13/cobra",
     "github.com/spf13/viper",
     "github.com/vektah/gqlparser",

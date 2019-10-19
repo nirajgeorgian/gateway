@@ -2,6 +2,18 @@
 
 package models
 
+import (
+	"github.com/nirajgeorgian/account/src/model"
+)
+
+type AccountReq struct {
+	AccountID    *string `json:"AccountId"`
+	Email        *string `json:"Email"`
+	Username     *string `json:"Username"`
+	Description  *string `json:"Description"`
+	PasswordHash *string `json:"PasswordHash"`
+}
+
 type AttachmentInput struct {
 	Type  string `json:"Type"`
 	Value string `json:"Value"`
@@ -15,13 +27,6 @@ type AuthReq struct {
 type AuthRes struct {
 	Token *string `json:"Token"`
 	Valid *bool   `json:"Valid"`
-}
-
-type CreateAccountReq struct {
-	Email        string `json:"Email"`
-	Username     string `json:"Username"`
-	Description  string `json:"Description"`
-	PasswordHash string `json:"PasswordHash"`
 }
 
 type CreateJobReq struct {
@@ -44,7 +49,28 @@ type PageInfo struct {
 	HasNextPage bool   `json:"hasNextPage"`
 }
 
+type ReadAccountReq struct {
+	AccountID string `json:"AccountId"`
+}
+
 type SallaryInput struct {
 	Value    int    `json:"Value"`
 	Currency string `json:"Currency"`
+}
+
+type UpdatedAccount struct {
+	Account *model.Account `json:"Account"`
+	Success *bool          `json:"Success"`
+}
+
+type ValidateEmailReq struct {
+	Email string `json:"Email"`
+}
+
+type ValidateUsernameReq struct {
+	Username string `json:"Username"`
+}
+
+type ValidationResponse struct {
+	Success *bool `json:"Success"`
 }

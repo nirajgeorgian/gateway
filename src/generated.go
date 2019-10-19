@@ -85,9 +85,10 @@ type ComplexityRoot struct {
 
 	Mutation struct {
 		Auth          func(childComplexity int, input models.AuthReq) int
-		CreateAccount func(childComplexity int, input models.CreateAccountReq) int
+		CreateAccount func(childComplexity int, input models.AccountReq) int
 		CreateJob     func(childComplexity int, input models.CreateJobReq) int
 		Dummy         func(childComplexity int) int
+		UpdateAccount func(childComplexity int, input models.AccountReq) int
 	}
 
 	PageInfo struct {
@@ -96,12 +97,24 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
-		Dummy func(childComplexity int) int
+		Dummy            func(childComplexity int) int
+		ReadAccount      func(childComplexity int, input models.ReadAccountReq) int
+		ValidateEmail    func(childComplexity int, input models.ValidateEmailReq) int
+		ValidateUsername func(childComplexity int, input models.ValidateUsernameReq) int
 	}
 
 	Sallary struct {
 		Currency func(childComplexity int) int
 		Value    func(childComplexity int) int
+	}
+
+	UpdatedAccount struct {
+		Account func(childComplexity int) int
+		Success func(childComplexity int) int
+	}
+
+	ValidationResponse struct {
+		Success func(childComplexity int) int
 	}
 }
 
@@ -111,12 +124,16 @@ type JobResolver interface {
 }
 type MutationResolver interface {
 	Dummy(ctx context.Context) (*string, error)
-	CreateAccount(ctx context.Context, input models.CreateAccountReq) (*model1.Account, error)
+	CreateAccount(ctx context.Context, input models.AccountReq) (*model1.Account, error)
+	UpdateAccount(ctx context.Context, input models.AccountReq) (*models.UpdatedAccount, error)
 	Auth(ctx context.Context, input models.AuthReq) (*models.AuthRes, error)
 	CreateJob(ctx context.Context, input models.CreateJobReq) (*model.Job, error)
 }
 type QueryResolver interface {
 	Dummy(ctx context.Context) (*string, error)
+	ReadAccount(ctx context.Context, input models.ReadAccountReq) (*model1.Account, error)
+	ValidateUsername(ctx context.Context, input models.ValidateUsernameReq) (*models.ValidationResponse, error)
+	ValidateEmail(ctx context.Context, input models.ValidateEmailReq) (*models.ValidationResponse, error)
 }
 type SallaryResolver interface {
 	Value(ctx context.Context, obj *model.Sallary) (int, error)
@@ -327,7 +344,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.CreateAccount(childComplexity, args["input"].(models.CreateAccountReq)), true
+		return e.complexity.Mutation.CreateAccount(childComplexity, args["input"].(models.AccountReq)), true
 
 	case "Mutation.CreateJob":
 		if e.complexity.Mutation.CreateJob == nil {
@@ -347,6 +364,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.Dummy(childComplexity), true
+
+	case "Mutation.UpdateAccount":
+		if e.complexity.Mutation.UpdateAccount == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_UpdateAccount_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdateAccount(childComplexity, args["input"].(models.AccountReq)), true
 
 	case "PageInfo.endCursor":
 		if e.complexity.PageInfo.EndCursor == nil {
@@ -369,6 +398,42 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.Dummy(childComplexity), true
 
+	case "Query.ReadAccount":
+		if e.complexity.Query.ReadAccount == nil {
+			break
+		}
+
+		args, err := ec.field_Query_ReadAccount_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.ReadAccount(childComplexity, args["input"].(models.ReadAccountReq)), true
+
+	case "Query.ValidateEmail":
+		if e.complexity.Query.ValidateEmail == nil {
+			break
+		}
+
+		args, err := ec.field_Query_ValidateEmail_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.ValidateEmail(childComplexity, args["input"].(models.ValidateEmailReq)), true
+
+	case "Query.ValidateUsername":
+		if e.complexity.Query.ValidateUsername == nil {
+			break
+		}
+
+		args, err := ec.field_Query_ValidateUsername_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.ValidateUsername(childComplexity, args["input"].(models.ValidateUsernameReq)), true
+
 	case "Sallary.Currency":
 		if e.complexity.Sallary.Currency == nil {
 			break
@@ -382,6 +447,27 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Sallary.Value(childComplexity), true
+
+	case "UpdatedAccount.Account":
+		if e.complexity.UpdatedAccount.Account == nil {
+			break
+		}
+
+		return e.complexity.UpdatedAccount.Account(childComplexity), true
+
+	case "UpdatedAccount.Success":
+		if e.complexity.UpdatedAccount.Success == nil {
+			break
+		}
+
+		return e.complexity.UpdatedAccount.Success(childComplexity), true
+
+	case "ValidationResponse.Success":
+		if e.complexity.ValidationResponse.Success == nil {
+			break
+		}
+
+		return e.complexity.ValidationResponse.Success(childComplexity), true
 
 	}
 	return 0, false
@@ -453,11 +539,23 @@ var parsedSchema = gqlparser.MustLoadSchema(
   PasswordHash: String
   PasswordSalt: String
 }
-input CreateAccountReq {
-  Email: String!
-  Username: String!
-  Description: String!
-  PasswordHash: String!
+type UpdatedAccount {
+  Account: Account
+  Success: Boolean
+}
+type ValidationResponse {
+  Success: Boolean
+}
+
+input AccountReq {
+  AccountId: String
+  Email: String
+  Username: String
+  Description: String
+  PasswordHash: String
+}
+input ReadAccountReq {
+  AccountId: String!
 }
 
 type AuthRes {
@@ -469,8 +567,22 @@ input AuthReq {
   PasswordHash: String
 }
 
+input ValidateUsernameReq {
+  Username: String!
+}
+input ValidateEmailReq {
+  Email: String!
+}
+
+extend type Query {
+  ReadAccount(input: ReadAccountReq!): Account
+  ValidateUsername(input: ValidateUsernameReq!): ValidationResponse
+  ValidateEmail(input: ValidateEmailReq!): ValidationResponse
+}
+
 extend type Mutation {
-  CreateAccount(input: CreateAccountReq!): Account
+  CreateAccount(input: AccountReq!): Account
+  UpdateAccount(input: AccountReq!): UpdatedAccount
   Auth (input: AuthReq!): AuthRes
 }
 `},
@@ -571,9 +683,9 @@ func (ec *executionContext) field_Mutation_Auth_args(ctx context.Context, rawArg
 func (ec *executionContext) field_Mutation_CreateAccount_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 models.CreateAccountReq
+	var arg0 models.AccountReq
 	if tmp, ok := rawArgs["input"]; ok {
-		arg0, err = ec.unmarshalNCreateAccountReq2githubᚗcomᚋnirajgeorgianᚋgatewayᚋsrcᚋmodelsᚐCreateAccountReq(ctx, tmp)
+		arg0, err = ec.unmarshalNAccountReq2githubᚗcomᚋnirajgeorgianᚋgatewayᚋsrcᚋmodelsᚐAccountReq(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -588,6 +700,62 @@ func (ec *executionContext) field_Mutation_CreateJob_args(ctx context.Context, r
 	var arg0 models.CreateJobReq
 	if tmp, ok := rawArgs["input"]; ok {
 		arg0, err = ec.unmarshalNCreateJobReq2githubᚗcomᚋnirajgeorgianᚋgatewayᚋsrcᚋmodelsᚐCreateJobReq(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_UpdateAccount_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 models.AccountReq
+	if tmp, ok := rawArgs["input"]; ok {
+		arg0, err = ec.unmarshalNAccountReq2githubᚗcomᚋnirajgeorgianᚋgatewayᚋsrcᚋmodelsᚐAccountReq(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_ReadAccount_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 models.ReadAccountReq
+	if tmp, ok := rawArgs["input"]; ok {
+		arg0, err = ec.unmarshalNReadAccountReq2githubᚗcomᚋnirajgeorgianᚋgatewayᚋsrcᚋmodelsᚐReadAccountReq(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_ValidateEmail_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 models.ValidateEmailReq
+	if tmp, ok := rawArgs["input"]; ok {
+		arg0, err = ec.unmarshalNValidateEmailReq2githubᚗcomᚋnirajgeorgianᚋgatewayᚋsrcᚋmodelsᚐValidateEmailReq(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_ValidateUsername_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 models.ValidateUsernameReq
+	if tmp, ok := rawArgs["input"]; ok {
+		arg0, err = ec.unmarshalNValidateUsernameReq2githubᚗcomᚋnirajgeorgianᚋgatewayᚋsrcᚋmodelsᚐValidateUsernameReq(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1552,7 +1720,7 @@ func (ec *executionContext) _Mutation_CreateAccount(ctx context.Context, field g
 	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().CreateAccount(rctx, args["input"].(models.CreateAccountReq))
+		return ec.resolvers.Mutation().CreateAccount(rctx, args["input"].(models.AccountReq))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -1565,6 +1733,47 @@ func (ec *executionContext) _Mutation_CreateAccount(ctx context.Context, field g
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
 	return ec.marshalOAccount2ᚖgithubᚗcomᚋnirajgeorgianᚋgatewayᚋvendorᚋgithubᚗcomᚋnirajgeorgianᚋaccountᚋsrcᚋmodelᚐAccount(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_UpdateAccount(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Mutation",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_UpdateAccount_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	rctx.Args = args
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().UpdateAccount(rctx, args["input"].(models.AccountReq))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*models.UpdatedAccount)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalOUpdatedAccount2ᚖgithubᚗcomᚋnirajgeorgianᚋgatewayᚋsrcᚋmodelsᚐUpdatedAccount(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_Auth(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -1757,6 +1966,129 @@ func (ec *executionContext) _Query_dummy(ctx context.Context, field graphql.Coll
 	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _Query_ReadAccount(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Query",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Query_ReadAccount_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	rctx.Args = args
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().ReadAccount(rctx, args["input"].(models.ReadAccountReq))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model1.Account)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalOAccount2ᚖgithubᚗcomᚋnirajgeorgianᚋgatewayᚋvendorᚋgithubᚗcomᚋnirajgeorgianᚋaccountᚋsrcᚋmodelᚐAccount(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Query_ValidateUsername(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Query",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Query_ValidateUsername_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	rctx.Args = args
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().ValidateUsername(rctx, args["input"].(models.ValidateUsernameReq))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*models.ValidationResponse)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalOValidationResponse2ᚖgithubᚗcomᚋnirajgeorgianᚋgatewayᚋsrcᚋmodelsᚐValidationResponse(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Query_ValidateEmail(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Query",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Query_ValidateEmail_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	rctx.Args = args
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().ValidateEmail(rctx, args["input"].(models.ValidateEmailReq))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*models.ValidationResponse)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalOValidationResponse2ᚖgithubᚗcomᚋnirajgeorgianᚋgatewayᚋsrcᚋmodelsᚐValidationResponse(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _Query___type(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
@@ -1904,6 +2236,108 @@ func (ec *executionContext) _Sallary_Currency(ctx context.Context, field graphql
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
 	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _UpdatedAccount_Account(ctx context.Context, field graphql.CollectedField, obj *models.UpdatedAccount) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "UpdatedAccount",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Account, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model1.Account)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalOAccount2ᚖgithubᚗcomᚋnirajgeorgianᚋgatewayᚋvendorᚋgithubᚗcomᚋnirajgeorgianᚋaccountᚋsrcᚋmodelᚐAccount(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _UpdatedAccount_Success(ctx context.Context, field graphql.CollectedField, obj *models.UpdatedAccount) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "UpdatedAccount",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Success, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*bool)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _ValidationResponse_Success(ctx context.Context, field graphql.CollectedField, obj *models.ValidationResponse) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "ValidationResponse",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Success, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*bool)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) ___Directive_name(ctx context.Context, field graphql.CollectedField, obj *introspection.Directive) (ret graphql.Marshaler) {
@@ -3057,6 +3491,48 @@ func (ec *executionContext) ___Type_ofType(ctx context.Context, field graphql.Co
 
 // region    **************************** input.gotpl *****************************
 
+func (ec *executionContext) unmarshalInputAccountReq(ctx context.Context, obj interface{}) (models.AccountReq, error) {
+	var it models.AccountReq
+	var asMap = obj.(map[string]interface{})
+
+	for k, v := range asMap {
+		switch k {
+		case "AccountId":
+			var err error
+			it.AccountID, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Email":
+			var err error
+			it.Email, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Username":
+			var err error
+			it.Username, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Description":
+			var err error
+			it.Description, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "PasswordHash":
+			var err error
+			it.PasswordHash, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputAttachmentInput(ctx context.Context, obj interface{}) (models.AttachmentInput, error) {
 	var it models.AttachmentInput
 	var asMap = obj.(map[string]interface{})
@@ -3096,42 +3572,6 @@ func (ec *executionContext) unmarshalInputAuthReq(ctx context.Context, obj inter
 		case "PasswordHash":
 			var err error
 			it.PasswordHash, err = ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		}
-	}
-
-	return it, nil
-}
-
-func (ec *executionContext) unmarshalInputCreateAccountReq(ctx context.Context, obj interface{}) (models.CreateAccountReq, error) {
-	var it models.CreateAccountReq
-	var asMap = obj.(map[string]interface{})
-
-	for k, v := range asMap {
-		switch k {
-		case "Email":
-			var err error
-			it.Email, err = ec.unmarshalNString2string(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Username":
-			var err error
-			it.Username, err = ec.unmarshalNString2string(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "Description":
-			var err error
-			it.Description, err = ec.unmarshalNString2string(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "PasswordHash":
-			var err error
-			it.PasswordHash, err = ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -3225,6 +3665,24 @@ func (ec *executionContext) unmarshalInputCreateJobReq(ctx context.Context, obj 
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputReadAccountReq(ctx context.Context, obj interface{}) (models.ReadAccountReq, error) {
+	var it models.ReadAccountReq
+	var asMap = obj.(map[string]interface{})
+
+	for k, v := range asMap {
+		switch k {
+		case "AccountId":
+			var err error
+			it.AccountID, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputSallaryInput(ctx context.Context, obj interface{}) (models.SallaryInput, error) {
 	var it models.SallaryInput
 	var asMap = obj.(map[string]interface{})
@@ -3240,6 +3698,42 @@ func (ec *executionContext) unmarshalInputSallaryInput(ctx context.Context, obj 
 		case "Currency":
 			var err error
 			it.Currency, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputValidateEmailReq(ctx context.Context, obj interface{}) (models.ValidateEmailReq, error) {
+	var it models.ValidateEmailReq
+	var asMap = obj.(map[string]interface{})
+
+	for k, v := range asMap {
+		switch k {
+		case "Email":
+			var err error
+			it.Email, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputValidateUsernameReq(ctx context.Context, obj interface{}) (models.ValidateUsernameReq, error) {
+	var it models.ValidateUsernameReq
+	var asMap = obj.(map[string]interface{})
+
+	for k, v := range asMap {
+		switch k {
+		case "Username":
+			var err error
+			it.Username, err = ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -3460,6 +3954,8 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			out.Values[i] = ec._Mutation_dummy(ctx, field)
 		case "CreateAccount":
 			out.Values[i] = ec._Mutation_CreateAccount(ctx, field)
+		case "UpdateAccount":
+			out.Values[i] = ec._Mutation_UpdateAccount(ctx, field)
 		case "Auth":
 			out.Values[i] = ec._Mutation_Auth(ctx, field)
 		case "CreateJob":
@@ -3533,6 +4029,39 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 				res = ec._Query_dummy(ctx, field)
 				return res
 			})
+		case "ReadAccount":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_ReadAccount(ctx, field)
+				return res
+			})
+		case "ValidateUsername":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_ValidateUsername(ctx, field)
+				return res
+			})
+		case "ValidateEmail":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_ValidateEmail(ctx, field)
+				return res
+			})
 		case "__type":
 			out.Values[i] = ec._Query___type(ctx, field)
 		case "__schema":
@@ -3578,6 +4107,56 @@ func (ec *executionContext) _Sallary(ctx context.Context, sel ast.SelectionSet, 
 			if out.Values[i] == graphql.Null {
 				atomic.AddUint32(&invalids, 1)
 			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var updatedAccountImplementors = []string{"UpdatedAccount"}
+
+func (ec *executionContext) _UpdatedAccount(ctx context.Context, sel ast.SelectionSet, obj *models.UpdatedAccount) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.RequestContext, sel, updatedAccountImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("UpdatedAccount")
+		case "Account":
+			out.Values[i] = ec._UpdatedAccount_Account(ctx, field, obj)
+		case "Success":
+			out.Values[i] = ec._UpdatedAccount_Success(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var validationResponseImplementors = []string{"ValidationResponse"}
+
+func (ec *executionContext) _ValidationResponse(ctx context.Context, sel ast.SelectionSet, obj *models.ValidationResponse) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.RequestContext, sel, validationResponseImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ValidationResponse")
+		case "Success":
+			out.Values[i] = ec._ValidationResponse_Success(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -3834,6 +4413,10 @@ func (ec *executionContext) ___Type(ctx context.Context, sel ast.SelectionSet, o
 
 // region    ***************************** type.gotpl *****************************
 
+func (ec *executionContext) unmarshalNAccountReq2githubᚗcomᚋnirajgeorgianᚋgatewayᚋsrcᚋmodelsᚐAccountReq(ctx context.Context, v interface{}) (models.AccountReq, error) {
+	return ec.unmarshalInputAccountReq(ctx, v)
+}
+
 func (ec *executionContext) unmarshalNAuthReq2githubᚗcomᚋnirajgeorgianᚋgatewayᚋsrcᚋmodelsᚐAuthReq(ctx context.Context, v interface{}) (models.AuthReq, error) {
 	return ec.unmarshalInputAuthReq(ctx, v)
 }
@@ -3850,10 +4433,6 @@ func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.Se
 		}
 	}
 	return res
-}
-
-func (ec *executionContext) unmarshalNCreateAccountReq2githubᚗcomᚋnirajgeorgianᚋgatewayᚋsrcᚋmodelsᚐCreateAccountReq(ctx context.Context, v interface{}) (models.CreateAccountReq, error) {
-	return ec.unmarshalInputCreateAccountReq(ctx, v)
 }
 
 func (ec *executionContext) unmarshalNCreateJobReq2githubᚗcomᚋnirajgeorgianᚋgatewayᚋsrcᚋmodelsᚐCreateJobReq(ctx context.Context, v interface{}) (models.CreateJobReq, error) {
@@ -3886,6 +4465,10 @@ func (ec *executionContext) marshalNInt2int(ctx context.Context, sel ast.Selecti
 		}
 	}
 	return res
+}
+
+func (ec *executionContext) unmarshalNReadAccountReq2githubᚗcomᚋnirajgeorgianᚋgatewayᚋsrcᚋmodelsᚐReadAccountReq(ctx context.Context, v interface{}) (models.ReadAccountReq, error) {
+	return ec.unmarshalInputReadAccountReq(ctx, v)
 }
 
 func (ec *executionContext) marshalNSallary2githubᚗcomᚋnirajgeorgianᚋgatewayᚋvendorᚋgithubᚗcomᚋnirajgeorgianᚋjobᚋsrcᚋmodelᚐSallary(ctx context.Context, sel ast.SelectionSet, v model.Sallary) graphql.Marshaler {
@@ -3926,6 +4509,14 @@ func (ec *executionContext) marshalNString2string(ctx context.Context, sel ast.S
 		}
 	}
 	return res
+}
+
+func (ec *executionContext) unmarshalNValidateEmailReq2githubᚗcomᚋnirajgeorgianᚋgatewayᚋsrcᚋmodelsᚐValidateEmailReq(ctx context.Context, v interface{}) (models.ValidateEmailReq, error) {
+	return ec.unmarshalInputValidateEmailReq(ctx, v)
+}
+
+func (ec *executionContext) unmarshalNValidateUsernameReq2githubᚗcomᚋnirajgeorgianᚋgatewayᚋsrcᚋmodelsᚐValidateUsernameReq(ctx context.Context, v interface{}) (models.ValidateUsernameReq, error) {
+	return ec.unmarshalInputValidateUsernameReq(ctx, v)
 }
 
 func (ec *executionContext) marshalN__Directive2githubᚗcomᚋnirajgeorgianᚋgatewayᚋvendorᚋgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐDirective(ctx context.Context, sel ast.SelectionSet, v introspection.Directive) graphql.Marshaler {
@@ -4354,6 +4945,28 @@ func (ec *executionContext) marshalOString2ᚖstring(ctx context.Context, sel as
 		return graphql.Null
 	}
 	return ec.marshalOString2string(ctx, sel, *v)
+}
+
+func (ec *executionContext) marshalOUpdatedAccount2githubᚗcomᚋnirajgeorgianᚋgatewayᚋsrcᚋmodelsᚐUpdatedAccount(ctx context.Context, sel ast.SelectionSet, v models.UpdatedAccount) graphql.Marshaler {
+	return ec._UpdatedAccount(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalOUpdatedAccount2ᚖgithubᚗcomᚋnirajgeorgianᚋgatewayᚋsrcᚋmodelsᚐUpdatedAccount(ctx context.Context, sel ast.SelectionSet, v *models.UpdatedAccount) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._UpdatedAccount(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalOValidationResponse2githubᚗcomᚋnirajgeorgianᚋgatewayᚋsrcᚋmodelsᚐValidationResponse(ctx context.Context, sel ast.SelectionSet, v models.ValidationResponse) graphql.Marshaler {
+	return ec._ValidationResponse(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalOValidationResponse2ᚖgithubᚗcomᚋnirajgeorgianᚋgatewayᚋsrcᚋmodelsᚐValidationResponse(ctx context.Context, sel ast.SelectionSet, v *models.ValidationResponse) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._ValidationResponse(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalO__EnumValue2ᚕgithubᚗcomᚋnirajgeorgianᚋgatewayᚋvendorᚋgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐEnumValue(ctx context.Context, sel ast.SelectionSet, v []introspection.EnumValue) graphql.Marshaler {

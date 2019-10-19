@@ -6,11 +6,23 @@ type Account {
   PasswordHash: String
   PasswordSalt: String
 }
-input CreateAccountReq {
-  Email: String!
-  Username: String!
-  Description: String!
-  PasswordHash: String!
+type UpdatedAccount {
+  Account: Account
+  Success: Boolean
+}
+type ValidationResponse {
+  Success: Boolean
+}
+
+input AccountReq {
+  AccountId: String
+  Email: String
+  Username: String
+  Description: String
+  PasswordHash: String
+}
+input ReadAccountReq {
+  AccountId: String!
 }
 
 type AuthRes {
@@ -22,7 +34,21 @@ input AuthReq {
   PasswordHash: String
 }
 
+input ValidateUsernameReq {
+  Username: String!
+}
+input ValidateEmailReq {
+  Email: String!
+}
+
+extend type Query {
+  ReadAccount(input: ReadAccountReq!): Account
+  ValidateUsername(input: ValidateUsernameReq!): ValidationResponse
+  ValidateEmail(input: ValidateEmailReq!): ValidationResponse
+}
+
 extend type Mutation {
-  CreateAccount(input: CreateAccountReq!): Account
+  CreateAccount(input: AccountReq!): Account
+  UpdateAccount(input: AccountReq!): UpdatedAccount
   Auth (input: AuthReq!): AuthRes
 }

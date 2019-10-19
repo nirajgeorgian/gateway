@@ -64,15 +64,15 @@ func (r *mutationResolver) CreateJob(ctx context.Context, in models.CreateJobReq
 	return job, nil
 }
 
-func (r *mutationResolver) CreateAccount(ctx context.Context, in models.CreateAccountReq) (*account.Account, error) {
+func (r *mutationResolver) CreateAccount(ctx context.Context, in models.AccountReq) (*account.Account, error) {
   ctx, cancel := context.WithTimeout(ctx, 3*time.Second)
   defer cancel()
 
   acc := &account.Account{
-    Email: in.Email,
-    Username: in.Username,
-    Description: in.Description,
-    PasswordHash: in.PasswordHash,
+		Email: *in.Email,
+    Username: *in.Username,
+    Description: *in.Description,
+    PasswordHash: *in.PasswordHash,
   }
   acc, err := r.server.AccountClient.CreateAccount(ctx, *acc)
   if err != nil {
@@ -100,4 +100,24 @@ func (r *mutationResolver) Auth(ctx context.Context, in models.AuthReq) (*models
     Token: &token.Token,
     Valid: &token.Valid,
   }, nil
+}
+
+func (r *mutationResolver) UpdateAccount(ctx context.Context, in models.AccountReq) (*models.UpdatedAccount, error) {
+  ctx, cancel := context.WithTimeout(ctx, 3*time.Second)
+  defer cancel()
+
+	acc := &account.Account{
+		AccountId: *in.AccountID,
+    Email: *in.Email,
+    Username: *in.Username,
+    Description: *in.Description,
+    PasswordHash: *in.PasswordHash,
+  }
+
+  upacc, err := r.server.AccountClient.UpdateAccount(ctx, *acc)
+  if err != nil {
+    log.Fatalf("could not greet: %v", err)
+  }
+
+  return &models.UpdatedAccount{Account: upacc.Account, Success: &upacc.Success}, nil
 }
