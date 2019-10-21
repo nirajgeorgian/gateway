@@ -29,6 +29,7 @@ struct_tag: json
 autobind:
   - github.com/nirajgeorgian/job/src/model
   - github.com/nirajgeorgian/account/src/model
+  - github.com/golang/protobuf/ptypes/timestamp
 
 models:
   ID:

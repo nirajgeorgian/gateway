@@ -22,6 +22,8 @@ type Job {
   JobStatus: Int!
   MinSallary: Sallary!
   MaxSallary: Sallary!
+  CreatedAt: Timestamp
+  UpdatedAt: Timestamp
 }
 
 input AttachmentInput {

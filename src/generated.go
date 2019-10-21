@@ -12,6 +12,7 @@ import (
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/introspection"
+	"github.com/golang/protobuf/ptypes/timestamp"
 	model1 "github.com/nirajgeorgian/account/src/model"
 	"github.com/nirajgeorgian/gateway/src/models"
 	"github.com/nirajgeorgian/job/src/model"
@@ -49,10 +50,12 @@ type DirectiveRoot struct {
 type ComplexityRoot struct {
 	Account struct {
 		AccountId    func(childComplexity int) int
+		CreatedAt    func(childComplexity int) int
 		Description  func(childComplexity int) int
 		Email        func(childComplexity int) int
 		PasswordHash func(childComplexity int) int
 		PasswordSalt func(childComplexity int) int
+		UpdatedAt    func(childComplexity int) int
 		Username     func(childComplexity int) int
 	}
 
@@ -67,6 +70,7 @@ type ComplexityRoot struct {
 	}
 
 	Job struct {
+		CreatedAt      func(childComplexity int) int
 		JobAttachment  func(childComplexity int) int
 		JobCategory    func(childComplexity int) int
 		JobDescription func(childComplexity int) int
@@ -79,6 +83,7 @@ type ComplexityRoot struct {
 		MaxSallary     func(childComplexity int) int
 		MinSallary     func(childComplexity int) int
 		SkillsRequired func(childComplexity int) int
+		UpdatedAt      func(childComplexity int) int
 		UsersApplied   func(childComplexity int) int
 		Views          func(childComplexity int) int
 	}
@@ -106,6 +111,11 @@ type ComplexityRoot struct {
 	Sallary struct {
 		Currency func(childComplexity int) int
 		Value    func(childComplexity int) int
+	}
+
+	Timestamp struct {
+		Nanos   func(childComplexity int) int
+		Seconds func(childComplexity int) int
 	}
 
 	UpdatedAccount struct {
@@ -161,6 +171,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Account.AccountId(childComplexity), true
 
+	case "Account.CreatedAt":
+		if e.complexity.Account.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.Account.CreatedAt(childComplexity), true
+
 	case "Account.Description":
 		if e.complexity.Account.Description == nil {
 			break
@@ -188,6 +205,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Account.PasswordSalt(childComplexity), true
+
+	case "Account.UpdatedAt":
+		if e.complexity.Account.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.Account.UpdatedAt(childComplexity), true
 
 	case "Account.Username":
 		if e.complexity.Account.Username == nil {
@@ -223,6 +247,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.AuthRes.Valid(childComplexity), true
+
+	case "Job.CreatedAt":
+		if e.complexity.Job.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.Job.CreatedAt(childComplexity), true
 
 	case "Job.JobAttachment":
 		if e.complexity.Job.JobAttachment == nil {
@@ -307,6 +338,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Job.SkillsRequired(childComplexity), true
+
+	case "Job.UpdatedAt":
+		if e.complexity.Job.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.Job.UpdatedAt(childComplexity), true
 
 	case "Job.UsersApplied":
 		if e.complexity.Job.UsersApplied == nil {
@@ -448,6 +486,20 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Sallary.Value(childComplexity), true
 
+	case "Timestamp.Nanos":
+		if e.complexity.Timestamp.Nanos == nil {
+			break
+		}
+
+		return e.complexity.Timestamp.Nanos(childComplexity), true
+
+	case "Timestamp.Seconds":
+		if e.complexity.Timestamp.Seconds == nil {
+			break
+		}
+
+		return e.complexity.Timestamp.Seconds(childComplexity), true
+
 	case "UpdatedAccount.Account":
 		if e.complexity.UpdatedAccount.Account == nil {
 			break
@@ -532,21 +584,36 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 
 var parsedSchema = gqlparser.MustLoadSchema(
 	&ast.Source{Name: "schemas/account.graphql", Input: `type Account {
-  AccountId: String
+  AccountId: ID!
   Email: String
   Username: String
   Description: String
   PasswordHash: String
   PasswordSalt: String
+  CreatedAt: Timestamp
+  UpdatedAt: Timestamp
+}
+type ValidationResponse {
+  Success: Boolean
 }
 type UpdatedAccount {
   Account: Account
   Success: Boolean
 }
-type ValidationResponse {
-  Success: Boolean
+type AuthRes {
+  Token: String
+  Valid: Boolean
 }
 
+input ReadAccountReq {
+  AccountId: String!
+}
+input ValidateUsernameReq {
+  Username: String!
+}
+input ValidateEmailReq {
+  Email: String!
+}
 input AccountReq {
   AccountId: String
   Email: String
@@ -554,24 +621,9 @@ input AccountReq {
   Description: String
   PasswordHash: String
 }
-input ReadAccountReq {
-  AccountId: String!
-}
-
-type AuthRes {
-  Token: String
-  Valid: Boolean
-}
 input AuthReq {
   Email: String
   PasswordHash: String
-}
-
-input ValidateUsernameReq {
-  Username: String!
-}
-input ValidateEmailReq {
-  Email: String!
 }
 
 extend type Query {
@@ -610,6 +662,8 @@ type Job {
   JobStatus: Int!
   MinSallary: Sallary!
   MaxSallary: Sallary!
+  CreatedAt: Timestamp
+  UpdatedAt: Timestamp
 }
 
 input AttachmentInput {
@@ -646,6 +700,10 @@ scalar Date
 type PageInfo {
 	endCursor: String!
 	hasNextPage: Boolean!
+}
+type Timestamp {
+  Seconds: Int
+  Nanos: Int
 }
 
 type Query {
@@ -840,12 +898,15 @@ func (ec *executionContext) _Account_AccountId(ctx context.Context, field graphq
 		return graphql.Null
 	}
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(string)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalOString2string(ctx, field.Selections, res)
+	return ec.marshalNID2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Account_Email(ctx context.Context, field graphql.CollectedField, obj *model1.Account) (ret graphql.Marshaler) {
@@ -1016,6 +1077,74 @@ func (ec *executionContext) _Account_PasswordSalt(ctx context.Context, field gra
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
 	return ec.marshalOString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Account_CreatedAt(ctx context.Context, field graphql.CollectedField, obj *model1.Account) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Account",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CreatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*timestamp.Timestamp)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalOTimestamp2ᚖgithubᚗcomᚋnirajgeorgianᚋgatewayᚋvendorᚋgithubᚗcomᚋgolangᚋprotobufᚋptypesᚋtimestampᚐTimestamp(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Account_UpdatedAt(ctx context.Context, field graphql.CollectedField, obj *model1.Account) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Account",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UpdatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*timestamp.Timestamp)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalOTimestamp2ᚖgithubᚗcomᚋnirajgeorgianᚋgatewayᚋvendorᚋgithubᚗcomᚋgolangᚋprotobufᚋptypesᚋtimestampᚐTimestamp(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Attachment_Type(ctx context.Context, field graphql.CollectedField, obj *model.Attachment) (ret graphql.Marshaler) {
@@ -1660,6 +1789,74 @@ func (ec *executionContext) _Job_MaxSallary(ctx context.Context, field graphql.C
 	return ec.marshalNSallary2ᚖgithubᚗcomᚋnirajgeorgianᚋgatewayᚋvendorᚋgithubᚗcomᚋnirajgeorgianᚋjobᚋsrcᚋmodelᚐSallary(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _Job_CreatedAt(ctx context.Context, field graphql.CollectedField, obj *model.Job) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Job",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CreatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*timestamp.Timestamp)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalOTimestamp2ᚖgithubᚗcomᚋnirajgeorgianᚋgatewayᚋvendorᚋgithubᚗcomᚋgolangᚋprotobufᚋptypesᚋtimestampᚐTimestamp(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Job_UpdatedAt(ctx context.Context, field graphql.CollectedField, obj *model.Job) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Job",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UpdatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*timestamp.Timestamp)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalOTimestamp2ᚖgithubᚗcomᚋnirajgeorgianᚋgatewayᚋvendorᚋgithubᚗcomᚋgolangᚋprotobufᚋptypesᚋtimestampᚐTimestamp(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _Mutation_dummy(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
@@ -2236,6 +2433,74 @@ func (ec *executionContext) _Sallary_Currency(ctx context.Context, field graphql
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
 	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Timestamp_Seconds(ctx context.Context, field graphql.CollectedField, obj *timestamp.Timestamp) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Timestamp",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Seconds, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(int64)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalOInt2int64(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Timestamp_Nanos(ctx context.Context, field graphql.CollectedField, obj *timestamp.Timestamp) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Timestamp",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Nanos, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(int32)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalOInt2int32(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _UpdatedAccount_Account(ctx context.Context, field graphql.CollectedField, obj *models.UpdatedAccount) (ret graphql.Marshaler) {
@@ -3764,6 +4029,9 @@ func (ec *executionContext) _Account(ctx context.Context, sel ast.SelectionSet, 
 			out.Values[i] = graphql.MarshalString("Account")
 		case "AccountId":
 			out.Values[i] = ec._Account_AccountId(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		case "Email":
 			out.Values[i] = ec._Account_Email(ctx, field, obj)
 		case "Username":
@@ -3774,6 +4042,10 @@ func (ec *executionContext) _Account(ctx context.Context, sel ast.SelectionSet, 
 			out.Values[i] = ec._Account_PasswordHash(ctx, field, obj)
 		case "PasswordSalt":
 			out.Values[i] = ec._Account_PasswordSalt(ctx, field, obj)
+		case "CreatedAt":
+			out.Values[i] = ec._Account_CreatedAt(ctx, field, obj)
+		case "UpdatedAt":
+			out.Values[i] = ec._Account_UpdatedAt(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -3924,6 +4196,10 @@ func (ec *executionContext) _Job(ctx context.Context, sel ast.SelectionSet, obj 
 			if out.Values[i] == graphql.Null {
 				atomic.AddUint32(&invalids, 1)
 			}
+		case "CreatedAt":
+			out.Values[i] = ec._Job_CreatedAt(ctx, field, obj)
+		case "UpdatedAt":
+			out.Values[i] = ec._Job_UpdatedAt(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -4107,6 +4383,32 @@ func (ec *executionContext) _Sallary(ctx context.Context, sel ast.SelectionSet, 
 			if out.Values[i] == graphql.Null {
 				atomic.AddUint32(&invalids, 1)
 			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var timestampImplementors = []string{"Timestamp"}
+
+func (ec *executionContext) _Timestamp(ctx context.Context, sel ast.SelectionSet, obj *timestamp.Timestamp) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.RequestContext, sel, timestampImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("Timestamp")
+		case "Seconds":
+			out.Values[i] = ec._Timestamp_Seconds(ctx, field, obj)
+		case "Nanos":
+			out.Values[i] = ec._Timestamp_Nanos(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -4873,6 +5175,14 @@ func (ec *executionContext) marshalOBoolean2ᚖbool(ctx context.Context, sel ast
 	return ec.marshalOBoolean2bool(ctx, sel, *v)
 }
 
+func (ec *executionContext) unmarshalOInt2int32(ctx context.Context, v interface{}) (int32, error) {
+	return graphql.UnmarshalInt32(v)
+}
+
+func (ec *executionContext) marshalOInt2int32(ctx context.Context, sel ast.SelectionSet, v int32) graphql.Marshaler {
+	return graphql.MarshalInt32(v)
+}
+
 func (ec *executionContext) unmarshalOInt2int64(ctx context.Context, v interface{}) (int64, error) {
 	return graphql.UnmarshalInt64(v)
 }
@@ -4945,6 +5255,17 @@ func (ec *executionContext) marshalOString2ᚖstring(ctx context.Context, sel as
 		return graphql.Null
 	}
 	return ec.marshalOString2string(ctx, sel, *v)
+}
+
+func (ec *executionContext) marshalOTimestamp2githubᚗcomᚋnirajgeorgianᚋgatewayᚋvendorᚋgithubᚗcomᚋgolangᚋprotobufᚋptypesᚋtimestampᚐTimestamp(ctx context.Context, sel ast.SelectionSet, v timestamp.Timestamp) graphql.Marshaler {
+	return ec._Timestamp(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalOTimestamp2ᚖgithubᚗcomᚋnirajgeorgianᚋgatewayᚋvendorᚋgithubᚗcomᚋgolangᚋprotobufᚋptypesᚋtimestampᚐTimestamp(ctx context.Context, sel ast.SelectionSet, v *timestamp.Timestamp) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._Timestamp(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalOUpdatedAccount2githubᚗcomᚋnirajgeorgianᚋgatewayᚋsrcᚋmodelsᚐUpdatedAccount(ctx context.Context, sel ast.SelectionSet, v models.UpdatedAccount) graphql.Marshaler {

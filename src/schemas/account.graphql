@@ -1,19 +1,34 @@
 type Account {
-  AccountId: String
+  AccountId: ID!
   Email: String
   Username: String
   Description: String
   PasswordHash: String
   PasswordSalt: String
+  CreatedAt: Timestamp
+  UpdatedAt: Timestamp
+}
+type ValidationResponse {
+  Success: Boolean
 }
 type UpdatedAccount {
   Account: Account
   Success: Boolean
 }
-type ValidationResponse {
-  Success: Boolean
+type AuthRes {
+  Token: String
+  Valid: Boolean
 }
 
+input ReadAccountReq {
+  AccountId: String!
+}
+input ValidateUsernameReq {
+  Username: String!
+}
+input ValidateEmailReq {
+  Email: String!
+}
 input AccountReq {
   AccountId: String
   Email: String
@@ -21,24 +36,9 @@ input AccountReq {
   Description: String
   PasswordHash: String
 }
-input ReadAccountReq {
-  AccountId: String!
-}
-
-type AuthRes {
-  Token: String
-  Valid: Boolean
-}
 input AuthReq {
   Email: String
   PasswordHash: String
-}
-
-input ValidateUsernameReq {
-  Username: String!
-}
-input ValidateEmailReq {
-  Email: String!
 }
 
 extend type Query {

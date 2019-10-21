@@ -6,6 +6,10 @@ type PageInfo {
 	endCursor: String!
 	hasNextPage: Boolean!
 }
+type Timestamp {
+  Seconds: Int
+  Nanos: Int
+}
 
 type Query {
   dummy: String
