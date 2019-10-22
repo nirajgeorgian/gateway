@@ -23,7 +23,6 @@ message Account {
   google.protobuf.Timestamp updated_at = 9;
 }
 
-
 // --------------- job model ----------------
 message Sallary {
   option (gorm.opts).ormable = true;
