@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  name: gateway
+  namespace: dododuck
+  labels:
+    app: gateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gateway
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: gateway-svc
+    spec:
+      serviceAccountName: gateway
+      containers:
+        - name: gateway-svc
+          image: nirajgeorgian/gateway:latest
+          imagePullPolicy: "Always"
+          resources:
+            requests:
+              cpu: 100m
+          ports:
+            - name: http
+              containerPort: 8080
+          env:
+            - name: ACCOUNTURI
+              value: account-svc.dododuck:3001
+            - name: JOBURI
+              value: job-svc.dododuck:3000
+            - name: PORT
+              value: 8080
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gateway-svc
+  namespace: dododuck
+spec:
+  type: LoadBalancer
+  selector:
+    app: gateway-svc
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080

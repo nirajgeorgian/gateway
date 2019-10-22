@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: gateway
+  name: gateway
+  namespace: dododuck
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gateway
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        linkerd.io/inject: enabled
+      creationTimestamp: null
+      labels:
+        app: gateway-svc
+    spec:
+      containers:
+      - env:
+        - name: ACCOUNTURI
+          value: account-svc.dododuck:3001
+        - name: JOBURI
+          value: job-svc.dododuck:3000
+        - name: PORT
+          value: "8080"
+        image: nirajgeorgian/gateway:latest
+        imagePullPolicy: Always
+        name: gateway-svc
+        ports:
+        - containerPort: 8080
+          name: http
+        resources:
+          requests:
+            cpu: 100m
+      serviceAccountName: gateway
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gateway-svc
+  namespace: dododuck
+spec:
+  type: LoadBalancer
+  selector:
+    app: gateway-svc
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080
+---
