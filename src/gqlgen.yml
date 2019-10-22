@@ -10,7 +10,7 @@ schema:
 
 # Let gqlgen know where to put the generated server
 exec:
-  filename: generated.go
+  filename: gateway/generated.go
   package: gateway
 
 # Let gqlgen know where to put the generated models (if any)
@@ -27,8 +27,7 @@ struct_tag: json
 #   type: Resolver
 #   package: resolvers
 autobind:
-  - github.com/nirajgeorgian/job/src/model
-  - github.com/nirajgeorgian/account/src/model
+  - github.com/nirajgeorgian/gateway/src/models
   - github.com/golang/protobuf/ptypes/timestamp
 
 models:
