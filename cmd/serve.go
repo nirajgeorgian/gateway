@@ -10,7 +10,7 @@ import (
 	"github.com/spf13/viper"
 	"github.com/99designs/gqlgen/handler"
 
-	gateway "github.com/nirajgeorgian/gateway/src"
+	gateway "github.com/nirajgeorgian/gateway/src/gateway"
 )
 
 // Port :- port to listen application on

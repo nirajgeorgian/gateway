@@ -2,10 +2,6 @@
 
 package models
 
-import (
-	"github.com/nirajgeorgian/account/src/model"
-)
-
 type AccountReq struct {
 	AccountID    *string `json:"AccountId"`
 	Email        *string `json:"Email"`
@@ -59,8 +55,8 @@ type SallaryInput struct {
 }
 
 type UpdatedAccount struct {
-	Account *model.Account `json:"Account"`
-	Success *bool          `json:"Success"`
+	Account *Account `json:"Account"`
+	Success *bool    `json:"Success"`
 }
 
 type ValidateEmailReq struct {

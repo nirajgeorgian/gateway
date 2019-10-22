@@ -1,0 +1,80 @@
+syntax = "proto3";
+package account;
+option go_package = "github.com/nirajgeorgian/gateway/src/api;api";
+
+import "github.com/gogo/protobuf/gogoproto/gogo.proto";
+option (gogoproto.goproto_registration) = true;
+
+import "model.proto";
+
+// create an account
+message CreateAccountReq {
+  Account account = 1;
+}
+message CreateAccountRes {
+  Account account = 1;
+}
+
+// read an account
+message ReadAccountReq {
+  string account_id = 1;
+}
+message ReadAccountRes {
+  Account account = 1;
+}
+
+// update an account
+message UpdateAccountReq {
+  Account account = 1;
+}
+message UpdateAccountRes {
+  bool success = 1;
+  Account account = 2;
+}
+
+// auth for account
+message AuthReq {
+  Account account = 1;
+}
+message AuthRes {
+  string token = 1;
+  bool valid = 2;
+}
+
+// validate username
+message ValidateUsernameReq {
+  string username = 1;
+}
+message ValidateUsernameRes {
+  bool success = 1;
+}
+
+// validate email
+message ValidateEmailReq {
+  string email = 1;
+}
+message ValidateEmailRes {
+  bool success = 1;
+}
+
+service AccountService {
+  rpc CreateAccount (CreateAccountReq) returns (CreateAccountRes) {};
+  rpc ReadAccount (ReadAccountReq) returns (ReadAccountRes) {};
+  rpc UpdateAccount (UpdateAccountReq) returns (UpdateAccountRes) {};
+  rpc Auth(AuthReq) returns (AuthRes) {};
+  rpc ValidateUsername(ValidateUsernameReq) returns (ValidateUsernameRes) {};
+  rpc ValidateEmail(ValidateEmailReq) returns (ValidateEmailRes) {};
+}
+
+
+//  --------------- Job api --------------------
+message CreateJobReq {
+  Job job = 1;
+}
+message CreateJobRes {
+  Job job = 1;
+}
+
+service JobService {
+  rpc CreateJob (CreateJobReq) returns (CreateJobRes) {};
+}

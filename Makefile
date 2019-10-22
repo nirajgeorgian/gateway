@@ -50,6 +50,23 @@ dep: ## setup all dependencies
 	@rm -r vendor/github.com/infobloxopen
 	@rm -r vendor/google.golang.org/grpc
 
+protos: ## generate the server and client proto defination files
+	@for service in gateway ; do \
+		echo "generating $$service model" ; \
+		protoc \
+			-I src/proto \
+			-I${GOPATH}/src \
+			--go_out=${GOPATH}/src \
+			--gorm_out=${GOPATH}/src \
+			src/proto/model.proto ; \
+		echo "generating $$service api" ; \
+		protoc \
+			-I src/proto \
+			-I${GOPATH}/src \
+			--go_out=plugins=grpc:${GOPATH}/src \
+			src/proto/api.proto ; \
+  done
+
 gqlgen-script: ## Build gqlgen files
 	@cd src; go run scripts/gqlgen.go -v;
 
