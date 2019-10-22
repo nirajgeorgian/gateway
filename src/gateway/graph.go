@@ -10,9 +10,6 @@ import (
 	"github.com/pkg/errors"
   "github.com/spf13/viper"
   "github.com/99designs/gqlgen/graphql"
-
-  // accountapi "github.com/nirajgeorgian/account/src/api"
-	// jobapi "github.com/nirajgeorgian/job/src/api"
 )
 
 type GatewayServer struct {
@@ -24,28 +21,13 @@ type GatewayServer struct {
 }
 
 func NewGraphQLServer(ctx context.Context) (*GatewayServer, error) {
-  // create an empty server
   svc := new(GatewayServer)
 
-	// account uri to copnnect to account service
   svc.AccountSvcAddr = viper.GetString("accounturi")
 	svc.JobSvcAddr = viper.GetString("joburi")
 
 	mustConnGRPC(ctx, &svc.AccountClient, svc.AccountSvcAddr)
 	mustConnGRPC(ctx, &svc.JobClient, svc.JobSvcAddr)
-  // accountClient, err := accountapi.NewClient(svc.AccountSvcAddr)
-  // if err != nil {
-	// 	return nil, err
-	// }
-  // svc.AccountClient = accountClient
-
-	// job uri to connect to job service
-	// svc.JobSvcAddr = viper.GetString("joburi")
-	// jobClient, err := jobapi.NewClient(svc.JobSvcAddr)
-	// if err != nil {
-	// 	return nil, err
-	// }
-	// svc.JobClient = jobClient
 
   return svc, nil
 }

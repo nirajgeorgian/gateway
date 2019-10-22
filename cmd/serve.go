@@ -27,9 +27,6 @@ func init() {
 	serveCmd.Flags().StringVarP(&AccountURI, "accounturi", "a", "localhost:3001", "URI for account service (required)")
 	serveCmd.Flags().StringVarP(&JobURI, "joburi", "j", "localhost:3000", "URI for job service (required)")
 
-	// serveCmd.MarkFlagRequired("secretkey")
-	// serveCmd.MarkFlagRequired("databaseuri")
-
 	viper.BindPFlag("port", serveCmd.Flags().Lookup("port"))
 	viper.BindPFlag("accounturi", serveCmd.Flags().Lookup("accounturi"))
 	viper.BindPFlag("joburi", serveCmd.Flags().Lookup("joburi"))

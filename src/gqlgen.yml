@@ -21,11 +21,6 @@ model:
 # Optional, turns on binding to field names by tag provided
 struct_tag: json
 
-# # Let gqlgen know where to put the generated resolvers
-# resolver:
-#   filename: gql/resolvers/generated.go
-#   type: Resolver
-#   package: resolvers
 autobind:
   - github.com/nirajgeorgian/gateway/src/models
   - github.com/golang/protobuf/ptypes/timestamp
