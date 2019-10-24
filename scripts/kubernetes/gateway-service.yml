@@ -7,7 +7,7 @@ metadata:
     app: gateway-svc
   creationTimestamp: null
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: gateway-svc
