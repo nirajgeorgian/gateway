@@ -13,6 +13,8 @@ import (
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/introspection"
 	"github.com/golang/protobuf/ptypes/timestamp"
+	models2 "github.com/nirajgeorgian/gateway/src/account/models"
+	models1 "github.com/nirajgeorgian/gateway/src/job/models"
 	"github.com/nirajgeorgian/gateway/src/models"
 	"github.com/vektah/gqlparser"
 	"github.com/vektah/gqlparser/ast"
@@ -132,25 +134,25 @@ type ComplexityRoot struct {
 }
 
 type JobResolver interface {
-	JobType(ctx context.Context, obj *models.Job) (int, error)
-	JobStatus(ctx context.Context, obj *models.Job) (int, error)
+	JobType(ctx context.Context, obj *models1.Job) (int, error)
+	JobStatus(ctx context.Context, obj *models1.Job) (int, error)
 }
 type MutationResolver interface {
 	Dummy(ctx context.Context) (*string, error)
-	CreateAccount(ctx context.Context, input models.AccountReq) (*models.Account, error)
+	CreateAccount(ctx context.Context, input models.AccountReq) (*models2.Account, error)
 	UpdateAccount(ctx context.Context, input models.AccountReq) (*models.UpdatedAccount, error)
 	Auth(ctx context.Context, input models.AuthReq) (*models.AuthRes, error)
-	CreateJob(ctx context.Context, input models.CreateJobReq) (*models.Job, error)
+	CreateJob(ctx context.Context, input models.CreateJobReq) (*models1.Job, error)
 	SendAccountConfirmation(ctx context.Context, input models.AccountConfirmationReq) (*models.ConfirmationRes, error)
 }
 type QueryResolver interface {
 	Dummy(ctx context.Context) (*string, error)
-	ReadAccount(ctx context.Context, input models.ReadAccountReq) (*models.Account, error)
+	ReadAccount(ctx context.Context, input models.ReadAccountReq) (*models2.Account, error)
 	ValidateUsername(ctx context.Context, input models.ValidateUsernameReq) (*models.ValidationResponse, error)
 	ValidateEmail(ctx context.Context, input models.ValidateEmailReq) (*models.ValidationResponse, error)
 }
 type SallaryResolver interface {
-	Value(ctx context.Context, obj *models.Sallary) (int, error)
+	Value(ctx context.Context, obj *models1.Sallary) (int, error)
 }
 
 type executableSchema struct {
@@ -607,7 +609,7 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 
 var parsedSchema = gqlparser.MustLoadSchema(
 	&ast.Source{Name: "schemas/account.graphql", Input: `type Account {
-  AccountId: ID!
+  AccountId: String!
   Email: String
   Username: String
   Description: String
@@ -923,7 +925,7 @@ func (ec *executionContext) field___Type_fields_args(ctx context.Context, rawArg
 
 // region    **************************** field.gotpl *****************************
 
-func (ec *executionContext) _Account_AccountId(ctx context.Context, field graphql.CollectedField, obj *models.Account) (ret graphql.Marshaler) {
+func (ec *executionContext) _Account_AccountId(ctx context.Context, field graphql.CollectedField, obj *models2.Account) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -957,10 +959,10 @@ func (ec *executionContext) _Account_AccountId(ctx context.Context, field graphq
 	res := resTmp.(string)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNID2string(ctx, field.Selections, res)
+	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Account_Email(ctx context.Context, field graphql.CollectedField, obj *models.Account) (ret graphql.Marshaler) {
+func (ec *executionContext) _Account_Email(ctx context.Context, field graphql.CollectedField, obj *models2.Account) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -994,7 +996,7 @@ func (ec *executionContext) _Account_Email(ctx context.Context, field graphql.Co
 	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Account_Username(ctx context.Context, field graphql.CollectedField, obj *models.Account) (ret graphql.Marshaler) {
+func (ec *executionContext) _Account_Username(ctx context.Context, field graphql.CollectedField, obj *models2.Account) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -1028,7 +1030,7 @@ func (ec *executionContext) _Account_Username(ctx context.Context, field graphql
 	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Account_Description(ctx context.Context, field graphql.CollectedField, obj *models.Account) (ret graphql.Marshaler) {
+func (ec *executionContext) _Account_Description(ctx context.Context, field graphql.CollectedField, obj *models2.Account) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -1062,7 +1064,7 @@ func (ec *executionContext) _Account_Description(ctx context.Context, field grap
 	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Account_PasswordHash(ctx context.Context, field graphql.CollectedField, obj *models.Account) (ret graphql.Marshaler) {
+func (ec *executionContext) _Account_PasswordHash(ctx context.Context, field graphql.CollectedField, obj *models2.Account) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -1096,7 +1098,7 @@ func (ec *executionContext) _Account_PasswordHash(ctx context.Context, field gra
 	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Account_PasswordSalt(ctx context.Context, field graphql.CollectedField, obj *models.Account) (ret graphql.Marshaler) {
+func (ec *executionContext) _Account_PasswordSalt(ctx context.Context, field graphql.CollectedField, obj *models2.Account) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -1130,7 +1132,7 @@ func (ec *executionContext) _Account_PasswordSalt(ctx context.Context, field gra
 	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Account_CreatedAt(ctx context.Context, field graphql.CollectedField, obj *models.Account) (ret graphql.Marshaler) {
+func (ec *executionContext) _Account_CreatedAt(ctx context.Context, field graphql.CollectedField, obj *models2.Account) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -1164,7 +1166,7 @@ func (ec *executionContext) _Account_CreatedAt(ctx context.Context, field graphq
 	return ec.marshalOTimestamp2ᚖgithubᚗcomᚋnirajgeorgianᚋgatewayᚋvendorᚋgithubᚗcomᚋgolangᚋprotobufᚋptypesᚋtimestampᚐTimestamp(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Account_UpdatedAt(ctx context.Context, field graphql.CollectedField, obj *models.Account) (ret graphql.Marshaler) {
+func (ec *executionContext) _Account_UpdatedAt(ctx context.Context, field graphql.CollectedField, obj *models2.Account) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -1198,7 +1200,7 @@ func (ec *executionContext) _Account_UpdatedAt(ctx context.Context, field graphq
 	return ec.marshalOTimestamp2ᚖgithubᚗcomᚋnirajgeorgianᚋgatewayᚋvendorᚋgithubᚗcomᚋgolangᚋprotobufᚋptypesᚋtimestampᚐTimestamp(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Attachment_Type(ctx context.Context, field graphql.CollectedField, obj *models.Attachment) (ret graphql.Marshaler) {
+func (ec *executionContext) _Attachment_Type(ctx context.Context, field graphql.CollectedField, obj *models1.Attachment) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -1235,7 +1237,7 @@ func (ec *executionContext) _Attachment_Type(ctx context.Context, field graphql.
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Attachment_Value(ctx context.Context, field graphql.CollectedField, obj *models.Attachment) (ret graphql.Marshaler) {
+func (ec *executionContext) _Attachment_Value(ctx context.Context, field graphql.CollectedField, obj *models1.Attachment) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -1374,7 +1376,7 @@ func (ec *executionContext) _ConfirmationRes_Status(ctx context.Context, field g
 	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Job_JobId(ctx context.Context, field graphql.CollectedField, obj *models.Job) (ret graphql.Marshaler) {
+func (ec *executionContext) _Job_JobId(ctx context.Context, field graphql.CollectedField, obj *models1.Job) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -1411,7 +1413,7 @@ func (ec *executionContext) _Job_JobId(ctx context.Context, field graphql.Collec
 	return ec.marshalNID2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Job_JobName(ctx context.Context, field graphql.CollectedField, obj *models.Job) (ret graphql.Marshaler) {
+func (ec *executionContext) _Job_JobName(ctx context.Context, field graphql.CollectedField, obj *models1.Job) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -1448,7 +1450,7 @@ func (ec *executionContext) _Job_JobName(ctx context.Context, field graphql.Coll
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Job_JobDescription(ctx context.Context, field graphql.CollectedField, obj *models.Job) (ret graphql.Marshaler) {
+func (ec *executionContext) _Job_JobDescription(ctx context.Context, field graphql.CollectedField, obj *models1.Job) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -1485,7 +1487,7 @@ func (ec *executionContext) _Job_JobDescription(ctx context.Context, field graph
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Job_JobCategory(ctx context.Context, field graphql.CollectedField, obj *models.Job) (ret graphql.Marshaler) {
+func (ec *executionContext) _Job_JobCategory(ctx context.Context, field graphql.CollectedField, obj *models1.Job) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -1522,7 +1524,7 @@ func (ec *executionContext) _Job_JobCategory(ctx context.Context, field graphql.
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Job_Location(ctx context.Context, field graphql.CollectedField, obj *models.Job) (ret graphql.Marshaler) {
+func (ec *executionContext) _Job_Location(ctx context.Context, field graphql.CollectedField, obj *models1.Job) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -1556,7 +1558,7 @@ func (ec *executionContext) _Job_Location(ctx context.Context, field graphql.Col
 	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Job_Views(ctx context.Context, field graphql.CollectedField, obj *models.Job) (ret graphql.Marshaler) {
+func (ec *executionContext) _Job_Views(ctx context.Context, field graphql.CollectedField, obj *models1.Job) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -1590,7 +1592,7 @@ func (ec *executionContext) _Job_Views(ctx context.Context, field graphql.Collec
 	return ec.marshalOInt2int64(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Job_JobTag(ctx context.Context, field graphql.CollectedField, obj *models.Job) (ret graphql.Marshaler) {
+func (ec *executionContext) _Job_JobTag(ctx context.Context, field graphql.CollectedField, obj *models1.Job) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -1624,7 +1626,7 @@ func (ec *executionContext) _Job_JobTag(ctx context.Context, field graphql.Colle
 	return ec.marshalOString2ᚕstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Job_SkillsRequired(ctx context.Context, field graphql.CollectedField, obj *models.Job) (ret graphql.Marshaler) {
+func (ec *executionContext) _Job_SkillsRequired(ctx context.Context, field graphql.CollectedField, obj *models1.Job) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -1658,7 +1660,7 @@ func (ec *executionContext) _Job_SkillsRequired(ctx context.Context, field graph
 	return ec.marshalOString2ᚕstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Job_UsersApplied(ctx context.Context, field graphql.CollectedField, obj *models.Job) (ret graphql.Marshaler) {
+func (ec *executionContext) _Job_UsersApplied(ctx context.Context, field graphql.CollectedField, obj *models1.Job) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -1692,7 +1694,7 @@ func (ec *executionContext) _Job_UsersApplied(ctx context.Context, field graphql
 	return ec.marshalOString2ᚕstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Job_JobAttachment(ctx context.Context, field graphql.CollectedField, obj *models.Job) (ret graphql.Marshaler) {
+func (ec *executionContext) _Job_JobAttachment(ctx context.Context, field graphql.CollectedField, obj *models1.Job) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -1720,13 +1722,13 @@ func (ec *executionContext) _Job_JobAttachment(ctx context.Context, field graphq
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]*models.Attachment)
+	res := resTmp.([]*models1.Attachment)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalOAttachment2ᚕᚖgithubᚗcomᚋnirajgeorgianᚋgatewayᚋsrcᚋmodelsᚐAttachment(ctx, field.Selections, res)
+	return ec.marshalOAttachment2ᚕᚖgithubᚗcomᚋnirajgeorgianᚋgatewayᚋsrcᚋjobᚋmodelsᚐAttachment(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Job_JobType(ctx context.Context, field graphql.CollectedField, obj *models.Job) (ret graphql.Marshaler) {
+func (ec *executionContext) _Job_JobType(ctx context.Context, field graphql.CollectedField, obj *models1.Job) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -1763,7 +1765,7 @@ func (ec *executionContext) _Job_JobType(ctx context.Context, field graphql.Coll
 	return ec.marshalNInt2int(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Job_JobStatus(ctx context.Context, field graphql.CollectedField, obj *models.Job) (ret graphql.Marshaler) {
+func (ec *executionContext) _Job_JobStatus(ctx context.Context, field graphql.CollectedField, obj *models1.Job) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -1800,7 +1802,7 @@ func (ec *executionContext) _Job_JobStatus(ctx context.Context, field graphql.Co
 	return ec.marshalNInt2int(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Job_MinSallary(ctx context.Context, field graphql.CollectedField, obj *models.Job) (ret graphql.Marshaler) {
+func (ec *executionContext) _Job_MinSallary(ctx context.Context, field graphql.CollectedField, obj *models1.Job) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -1831,13 +1833,13 @@ func (ec *executionContext) _Job_MinSallary(ctx context.Context, field graphql.C
 		}
 		return graphql.Null
 	}
-	res := resTmp.(*models.Sallary)
+	res := resTmp.(*models1.Sallary)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNSallary2ᚖgithubᚗcomᚋnirajgeorgianᚋgatewayᚋsrcᚋmodelsᚐSallary(ctx, field.Selections, res)
+	return ec.marshalNSallary2ᚖgithubᚗcomᚋnirajgeorgianᚋgatewayᚋsrcᚋjobᚋmodelsᚐSallary(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Job_MaxSallary(ctx context.Context, field graphql.CollectedField, obj *models.Job) (ret graphql.Marshaler) {
+func (ec *executionContext) _Job_MaxSallary(ctx context.Context, field graphql.CollectedField, obj *models1.Job) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -1868,13 +1870,13 @@ func (ec *executionContext) _Job_MaxSallary(ctx context.Context, field graphql.C
 		}
 		return graphql.Null
 	}
-	res := resTmp.(*models.Sallary)
+	res := resTmp.(*models1.Sallary)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalNSallary2ᚖgithubᚗcomᚋnirajgeorgianᚋgatewayᚋsrcᚋmodelsᚐSallary(ctx, field.Selections, res)
+	return ec.marshalNSallary2ᚖgithubᚗcomᚋnirajgeorgianᚋgatewayᚋsrcᚋjobᚋmodelsᚐSallary(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Job_CreatedAt(ctx context.Context, field graphql.CollectedField, obj *models.Job) (ret graphql.Marshaler) {
+func (ec *executionContext) _Job_CreatedAt(ctx context.Context, field graphql.CollectedField, obj *models1.Job) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -1908,7 +1910,7 @@ func (ec *executionContext) _Job_CreatedAt(ctx context.Context, field graphql.Co
 	return ec.marshalOTimestamp2ᚖgithubᚗcomᚋnirajgeorgianᚋgatewayᚋvendorᚋgithubᚗcomᚋgolangᚋprotobufᚋptypesᚋtimestampᚐTimestamp(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Job_UpdatedAt(ctx context.Context, field graphql.CollectedField, obj *models.Job) (ret graphql.Marshaler) {
+func (ec *executionContext) _Job_UpdatedAt(ctx context.Context, field graphql.CollectedField, obj *models1.Job) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -2011,10 +2013,10 @@ func (ec *executionContext) _Mutation_CreateAccount(ctx context.Context, field g
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*models.Account)
+	res := resTmp.(*models2.Account)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalOAccount2ᚖgithubᚗcomᚋnirajgeorgianᚋgatewayᚋsrcᚋmodelsᚐAccount(ctx, field.Selections, res)
+	return ec.marshalOAccount2ᚖgithubᚗcomᚋnirajgeorgianᚋgatewayᚋsrcᚋaccountᚋmodelsᚐAccount(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_UpdateAccount(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -2134,10 +2136,10 @@ func (ec *executionContext) _Mutation_CreateJob(ctx context.Context, field graph
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*models.Job)
+	res := resTmp.(*models1.Job)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalOJob2ᚖgithubᚗcomᚋnirajgeorgianᚋgatewayᚋsrcᚋmodelsᚐJob(ctx, field.Selections, res)
+	return ec.marshalOJob2ᚖgithubᚗcomᚋnirajgeorgianᚋgatewayᚋsrcᚋjobᚋmodelsᚐJob(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_SendAccountConfirmation(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -2327,10 +2329,10 @@ func (ec *executionContext) _Query_ReadAccount(ctx context.Context, field graphq
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*models.Account)
+	res := resTmp.(*models2.Account)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalOAccount2ᚖgithubᚗcomᚋnirajgeorgianᚋgatewayᚋsrcᚋmodelsᚐAccount(ctx, field.Selections, res)
+	return ec.marshalOAccount2ᚖgithubᚗcomᚋnirajgeorgianᚋgatewayᚋsrcᚋaccountᚋmodelsᚐAccount(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query_ValidateUsername(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -2490,7 +2492,7 @@ func (ec *executionContext) _Query___schema(ctx context.Context, field graphql.C
 	return ec.marshalO__Schema2ᚖgithubᚗcomᚋnirajgeorgianᚋgatewayᚋvendorᚋgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐSchema(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Sallary_Value(ctx context.Context, field graphql.CollectedField, obj *models.Sallary) (ret graphql.Marshaler) {
+func (ec *executionContext) _Sallary_Value(ctx context.Context, field graphql.CollectedField, obj *models1.Sallary) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -2527,7 +2529,7 @@ func (ec *executionContext) _Sallary_Value(ctx context.Context, field graphql.Co
 	return ec.marshalNInt2int(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Sallary_Currency(ctx context.Context, field graphql.CollectedField, obj *models.Sallary) (ret graphql.Marshaler) {
+func (ec *executionContext) _Sallary_Currency(ctx context.Context, field graphql.CollectedField, obj *models1.Sallary) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -2660,10 +2662,10 @@ func (ec *executionContext) _UpdatedAccount_Account(ctx context.Context, field g
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*models.Account)
+	res := resTmp.(*models2.Account)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
-	return ec.marshalOAccount2ᚖgithubᚗcomᚋnirajgeorgianᚋgatewayᚋsrcᚋmodelsᚐAccount(ctx, field.Selections, res)
+	return ec.marshalOAccount2ᚖgithubᚗcomᚋnirajgeorgianᚋgatewayᚋsrcᚋaccountᚋmodelsᚐAccount(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _UpdatedAccount_Success(ctx context.Context, field graphql.CollectedField, obj *models.UpdatedAccount) (ret graphql.Marshaler) {
@@ -4177,7 +4179,7 @@ func (ec *executionContext) unmarshalInputValidateUsernameReq(ctx context.Contex
 
 var accountImplementors = []string{"Account"}
 
-func (ec *executionContext) _Account(ctx context.Context, sel ast.SelectionSet, obj *models.Account) graphql.Marshaler {
+func (ec *executionContext) _Account(ctx context.Context, sel ast.SelectionSet, obj *models2.Account) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.RequestContext, sel, accountImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -4218,7 +4220,7 @@ func (ec *executionContext) _Account(ctx context.Context, sel ast.SelectionSet, 
 
 var attachmentImplementors = []string{"Attachment"}
 
-func (ec *executionContext) _Attachment(ctx context.Context, sel ast.SelectionSet, obj *models.Attachment) graphql.Marshaler {
+func (ec *executionContext) _Attachment(ctx context.Context, sel ast.SelectionSet, obj *models1.Attachment) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.RequestContext, sel, attachmentImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -4300,7 +4302,7 @@ func (ec *executionContext) _ConfirmationRes(ctx context.Context, sel ast.Select
 
 var jobImplementors = []string{"Job"}
 
-func (ec *executionContext) _Job(ctx context.Context, sel ast.SelectionSet, obj *models.Job) graphql.Marshaler {
+func (ec *executionContext) _Job(ctx context.Context, sel ast.SelectionSet, obj *models1.Job) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.RequestContext, sel, jobImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -4543,7 +4545,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 
 var sallaryImplementors = []string{"Sallary"}
 
-func (ec *executionContext) _Sallary(ctx context.Context, sel ast.SelectionSet, obj *models.Sallary) graphql.Marshaler {
+func (ec *executionContext) _Sallary(ctx context.Context, sel ast.SelectionSet, obj *models1.Sallary) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.RequestContext, sel, sallaryImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -4979,11 +4981,11 @@ func (ec *executionContext) unmarshalNReadAccountReq2githubᚗcomᚋnirajgeorgia
 	return ec.unmarshalInputReadAccountReq(ctx, v)
 }
 
-func (ec *executionContext) marshalNSallary2githubᚗcomᚋnirajgeorgianᚋgatewayᚋsrcᚋmodelsᚐSallary(ctx context.Context, sel ast.SelectionSet, v models.Sallary) graphql.Marshaler {
+func (ec *executionContext) marshalNSallary2githubᚗcomᚋnirajgeorgianᚋgatewayᚋsrcᚋjobᚋmodelsᚐSallary(ctx context.Context, sel ast.SelectionSet, v models1.Sallary) graphql.Marshaler {
 	return ec._Sallary(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNSallary2ᚖgithubᚗcomᚋnirajgeorgianᚋgatewayᚋsrcᚋmodelsᚐSallary(ctx context.Context, sel ast.SelectionSet, v *models.Sallary) graphql.Marshaler {
+func (ec *executionContext) marshalNSallary2ᚖgithubᚗcomᚋnirajgeorgianᚋgatewayᚋsrcᚋjobᚋmodelsᚐSallary(ctx context.Context, sel ast.SelectionSet, v *models1.Sallary) graphql.Marshaler {
 	if v == nil {
 		if !ec.HasError(graphql.GetResolverContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
@@ -5253,22 +5255,22 @@ func (ec *executionContext) marshalN__TypeKind2string(ctx context.Context, sel a
 	return res
 }
 
-func (ec *executionContext) marshalOAccount2githubᚗcomᚋnirajgeorgianᚋgatewayᚋsrcᚋmodelsᚐAccount(ctx context.Context, sel ast.SelectionSet, v models.Account) graphql.Marshaler {
+func (ec *executionContext) marshalOAccount2githubᚗcomᚋnirajgeorgianᚋgatewayᚋsrcᚋaccountᚋmodelsᚐAccount(ctx context.Context, sel ast.SelectionSet, v models2.Account) graphql.Marshaler {
 	return ec._Account(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalOAccount2ᚖgithubᚗcomᚋnirajgeorgianᚋgatewayᚋsrcᚋmodelsᚐAccount(ctx context.Context, sel ast.SelectionSet, v *models.Account) graphql.Marshaler {
+func (ec *executionContext) marshalOAccount2ᚖgithubᚗcomᚋnirajgeorgianᚋgatewayᚋsrcᚋaccountᚋmodelsᚐAccount(ctx context.Context, sel ast.SelectionSet, v *models2.Account) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._Account(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOAttachment2githubᚗcomᚋnirajgeorgianᚋgatewayᚋsrcᚋmodelsᚐAttachment(ctx context.Context, sel ast.SelectionSet, v models.Attachment) graphql.Marshaler {
+func (ec *executionContext) marshalOAttachment2githubᚗcomᚋnirajgeorgianᚋgatewayᚋsrcᚋjobᚋmodelsᚐAttachment(ctx context.Context, sel ast.SelectionSet, v models1.Attachment) graphql.Marshaler {
 	return ec._Attachment(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalOAttachment2ᚕᚖgithubᚗcomᚋnirajgeorgianᚋgatewayᚋsrcᚋmodelsᚐAttachment(ctx context.Context, sel ast.SelectionSet, v []*models.Attachment) graphql.Marshaler {
+func (ec *executionContext) marshalOAttachment2ᚕᚖgithubᚗcomᚋnirajgeorgianᚋgatewayᚋsrcᚋjobᚋmodelsᚐAttachment(ctx context.Context, sel ast.SelectionSet, v []*models1.Attachment) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -5295,7 +5297,7 @@ func (ec *executionContext) marshalOAttachment2ᚕᚖgithubᚗcomᚋnirajgeorgia
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalOAttachment2ᚖgithubᚗcomᚋnirajgeorgianᚋgatewayᚋsrcᚋmodelsᚐAttachment(ctx, sel, v[i])
+			ret[i] = ec.marshalOAttachment2ᚖgithubᚗcomᚋnirajgeorgianᚋgatewayᚋsrcᚋjobᚋmodelsᚐAttachment(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -5308,7 +5310,7 @@ func (ec *executionContext) marshalOAttachment2ᚕᚖgithubᚗcomᚋnirajgeorgia
 	return ret
 }
 
-func (ec *executionContext) marshalOAttachment2ᚖgithubᚗcomᚋnirajgeorgianᚋgatewayᚋsrcᚋmodelsᚐAttachment(ctx context.Context, sel ast.SelectionSet, v *models.Attachment) graphql.Marshaler {
+func (ec *executionContext) marshalOAttachment2ᚖgithubᚗcomᚋnirajgeorgianᚋgatewayᚋsrcᚋjobᚋmodelsᚐAttachment(ctx context.Context, sel ast.SelectionSet, v *models1.Attachment) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -5397,11 +5399,11 @@ func (ec *executionContext) marshalOInt2int64(ctx context.Context, sel ast.Selec
 	return graphql.MarshalInt64(v)
 }
 
-func (ec *executionContext) marshalOJob2githubᚗcomᚋnirajgeorgianᚋgatewayᚋsrcᚋmodelsᚐJob(ctx context.Context, sel ast.SelectionSet, v models.Job) graphql.Marshaler {
+func (ec *executionContext) marshalOJob2githubᚗcomᚋnirajgeorgianᚋgatewayᚋsrcᚋjobᚋmodelsᚐJob(ctx context.Context, sel ast.SelectionSet, v models1.Job) graphql.Marshaler {
 	return ec._Job(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalOJob2ᚖgithubᚗcomᚋnirajgeorgianᚋgatewayᚋsrcᚋmodelsᚐJob(ctx context.Context, sel ast.SelectionSet, v *models.Job) graphql.Marshaler {
+func (ec *executionContext) marshalOJob2ᚖgithubᚗcomᚋnirajgeorgianᚋgatewayᚋsrcᚋjobᚋmodelsᚐJob(ctx context.Context, sel ast.SelectionSet, v *models1.Job) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}

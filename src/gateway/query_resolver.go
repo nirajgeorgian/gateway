@@ -7,6 +7,7 @@ import (
 
 	"go.opencensus.io/trace"
   "github.com/nirajgeorgian/gateway/src/models"
+	accountmodels "github.com/nirajgeorgian/gateway/src/account/models"
 )
 
 type queryResolver struct {
@@ -29,7 +30,7 @@ func (r *queryResolver) Dummy(ctx context.Context) (*string, error)  {
   return &msg, nil
 }
 
-func (r *queryResolver) ReadAccount(ctx context.Context, in models.ReadAccountReq) (*models.Account, error) {
+func (r *queryResolver) ReadAccount(ctx context.Context, in models.ReadAccountReq) (*accountmodels.Account, error) {
 	_, span := trace.StartSpan(ctx, "gateway.http.gateway.ReadAccount")
 	defer span.End()
 

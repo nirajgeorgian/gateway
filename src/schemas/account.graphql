@@ -1,5 +1,5 @@
 type Account {
-  AccountId: ID!
+  AccountId: String!
   Email: String
   Username: String
   Description: String

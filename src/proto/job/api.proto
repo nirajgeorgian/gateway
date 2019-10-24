@@ -1,0 +1,20 @@
+syntax = "proto3";
+package job;
+option go_package = "github.com/nirajgeorgian/gateway/src/job/api;api";
+
+import "github.com/gogo/protobuf/gogoproto/gogo.proto";
+option (gogoproto.goproto_registration) = true;
+
+import "job/model.proto";
+
+//  --------------- Job api --------------------
+message CreateJobReq {
+  Job job = 1;
+}
+message CreateJobRes {
+  Job job = 1;
+}
+
+service JobService {
+  rpc CreateJob (CreateJobReq) returns (CreateJobRes) {};
+}

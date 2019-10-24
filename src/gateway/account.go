@@ -4,11 +4,11 @@ import (
 	"context"
 
 	"go.opencensus.io/trace"
-	"github.com/nirajgeorgian/gateway/src/api"
-	"github.com/nirajgeorgian/gateway/src/models"
+	api "github.com/nirajgeorgian/gateway/src/account/api"
+	accountmodel "github.com/nirajgeorgian/gateway/src/account/models"
 )
 
-func (c *GatewayServer) CreateAccount(ctx context.Context, account models.Account) (*models.Account, error) {
+func (c *GatewayServer) CreateAccount(ctx context.Context, account accountmodel.Account) (*accountmodel.Account, error) {
 	_, span := trace.StartSpan(ctx, "gateway.http.gateway.CreateAccount")
 	defer span.End()
 
@@ -29,7 +29,7 @@ func (c *GatewayServer) CreateAccount(ctx context.Context, account models.Accoun
 	return r.Account, nil
 }
 
-func (c *GatewayServer) UpdateAccount(ctx context.Context, account models.Account) (*api.UpdateAccountRes, error) {
+func (c *GatewayServer) UpdateAccount(ctx context.Context, account accountmodel.Account) (*api.UpdateAccountRes, error) {
 	_, span := trace.StartSpan(ctx, "gateway.http.gateway.UpdateAccount")
 	defer span.End()
 
@@ -109,7 +109,7 @@ func (c *GatewayServer) ValidateEmail(ctx context.Context, email string) (*api.V
 	return r, nil
 }
 
-func (c *GatewayServer) Auth(ctx context.Context, account models.Account) (*api.AuthRes, error) {
+func (c *GatewayServer) Auth(ctx context.Context, account accountmodel.Account) (*api.AuthRes, error) {
 	_, span := trace.StartSpan(ctx, "gateway.http.gateway.Auth")
 	defer span.End()
 

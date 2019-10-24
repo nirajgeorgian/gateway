@@ -23,8 +23,12 @@ model:
 struct_tag: json
 
 autobind:
-  - github.com/nirajgeorgian/gateway/src/models
   - github.com/golang/protobuf/ptypes/timestamp
+  - github.com/nirajgeorgian/gateway/src/account/models
+  - github.com/nirajgeorgian/gateway/src/job/models
+  - github/com/nirajgeorgian/gateway/src/account/api
+  - github/com/nirajgeorgian/gateway/src/job/api
+  - github/com/nirajgeorgian/gateway/src/mails/api
 
 models:
   ID:

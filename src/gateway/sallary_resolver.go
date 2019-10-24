@@ -5,14 +5,14 @@ import (
   "time"
 
 	"go.opencensus.io/trace"
-	models "github.com/nirajgeorgian/gateway/src/models"
+	jobmodels "github.com/nirajgeorgian/gateway/src/job/models"
 )
 
 type sallaryResolver struct {
   server *GatewayServer
 }
 
-func (r *sallaryResolver) Value(ctx context.Context, in *models.Sallary) (int, error) {
+func (r *sallaryResolver) Value(ctx context.Context, in *jobmodels.Sallary) (int, error) {
 	_, span := trace.StartSpan(ctx, "gateway.http.gateway.Value")
 	defer span.End()
 

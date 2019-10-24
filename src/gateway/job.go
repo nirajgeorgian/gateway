@@ -4,8 +4,8 @@ import (
 	"context"
 
 	"go.opencensus.io/trace"
-	"github.com/nirajgeorgian/gateway/src/api"
-	"github.com/nirajgeorgian/gateway/src/models"
+	api "github.com/nirajgeorgian/gateway/src/job/api"
+	"github.com/nirajgeorgian/gateway/src/job/models"
 )
 
 func (c *GatewayServer) CreateJob(ctx context.Context, job models.Job) (*models.Job, error) {

@@ -5,14 +5,14 @@ import (
   "time"
 
 	"go.opencensus.io/trace"
-	models "github.com/nirajgeorgian/gateway/src/models"
+	jobmodels "github.com/nirajgeorgian/gateway/src/job/models"
 )
 
 type jobResolver struct {
   server *GatewayServer
 }
 
-func (r *jobResolver) JobType(ctx context.Context, in *models.Job) (int, error) {
+func (r *jobResolver) JobType(ctx context.Context, in *jobmodels.Job) (int, error) {
 	_, span := trace.StartSpan(ctx, "gateway.http.gateway.JobType")
 	defer span.End()
 
@@ -26,7 +26,7 @@ func (r *jobResolver) JobType(ctx context.Context, in *models.Job) (int, error) 
 	return int(in.JobType), nil
 }
 
-func (r *jobResolver) JobStatus(ctx context.Context, in *models.Job) (int, error) {
+func (r *jobResolver) JobStatus(ctx context.Context, in *jobmodels.Job) (int, error) {
 	_, span := trace.StartSpan(ctx, "gateway.http.gateway.JobStatus")
 	defer span.End()
 

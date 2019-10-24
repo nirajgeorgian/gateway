@@ -1,0 +1,20 @@
+syntax = "proto3";
+package mails;
+option go_package = "github.com/nirajgeorgian/gateway/src/mails/api;api";
+
+import "github.com/gogo/protobuf/gogoproto/gogo.proto";
+option (gogoproto.goproto_registration) = true;
+
+// --------------- main api --------------------------
+message ConfirmationRes {
+	bool Status = 1;
+}
+message AccountConfirmationReq {
+	string Username = 1;
+	string Message = 2;
+	string ConfirmationCode = 3;
+}
+
+service MailsService {
+	rpc SendAccountConfirmation (AccountConfirmationReq) returns (ConfirmationRes) {};
+}

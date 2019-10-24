@@ -50,28 +50,29 @@ dep: ## setup all dependencies
 	@rm -r vendor/github.com/infobloxopen
 	@rm -r vendor/google.golang.org/grpc
 
+build: ## Build the binary file for server
+	@echo "dodo duck"
+	@go build -i -v -o $(SERVER_OUT) $(SERVER_PKG_BUILD)
+
 protos: ## generate the server and client proto defination files
-	@for service in gateway ; do \
+	@for service in account job mails ; do \
 		echo "generating $$service model" ; \
 		protoc \
 			-I src/proto \
 			-I${GOPATH}/src \
 			--go_out=${GOPATH}/src \
 			--gorm_out=${GOPATH}/src \
-			src/proto/model.proto ; \
+			src/proto/$$service/model.proto ; \
 		echo "generating $$service api" ; \
 		protoc \
 			-I src/proto \
 			-I${GOPATH}/src \
 			--go_out=plugins=grpc:${GOPATH}/src \
-			src/proto/api.proto ; \
+			src/proto/$$service/api.proto ; \
   done
 
 gqlgen-script: ## Build gqlgen files
 	@cd src; go run scripts/gqlgen.go -v;
-
-build: ## Build the binary file for server
-	@go build -i -v -o $(SERVER_OUT) $(SERVER_PKG_BUILD)
 
 help:
 	@IFS=$$'\n' ; \

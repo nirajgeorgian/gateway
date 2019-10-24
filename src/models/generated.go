@@ -2,6 +2,10 @@
 
 package models
 
+import (
+	"github.com/nirajgeorgian/gateway/src/account/models"
+)
+
 type AccountConfirmationReq struct {
 	Username         string `json:"Username"`
 	Message          string `json:"Message"`
@@ -65,8 +69,8 @@ type SallaryInput struct {
 }
 
 type UpdatedAccount struct {
-	Account *Account `json:"Account"`
-	Success *bool    `json:"Success"`
+	Account *models.Account `json:"Account"`
+	Success *bool           `json:"Success"`
 }
 
 type ValidateEmailReq struct {

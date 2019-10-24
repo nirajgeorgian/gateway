@@ -5,10 +5,11 @@ import (
   "errors"
   "time"
   "log"
-	"fmt"
 
 	"go.opencensus.io/trace"
   models "github.com/nirajgeorgian/gateway/src/models"
+	jobmodels "github.com/nirajgeorgian/gateway/src/job/models"
+	accountmodels "github.com/nirajgeorgian/gateway/src/account/models"
 )
 
 var (
@@ -35,7 +36,7 @@ func (r *mutationResolver)  Dummy(ctx context.Context) (*string, error)  {
   return &msg, nil
 }
 
-func (r *mutationResolver) CreateJob(ctx context.Context, in models.CreateJobReq) (*models.Job, error) {
+func (r *mutationResolver) CreateJob(ctx context.Context, in models.CreateJobReq) (*jobmodels.Job, error) {
 	_, span := trace.StartSpan(ctx, "gateway.http.gateway.CreateJob")
 	defer span.End()
 
@@ -43,24 +44,24 @@ func (r *mutationResolver) CreateJob(ctx context.Context, in models.CreateJobReq
   defer cancel()
 
 	// sallary min and max for range
-	MinSallary := &models.Sallary{
+	MinSallary := &jobmodels.Sallary{
 		Value: uint64(in.MinSallary.Value),
 		Currency: in.MinSallary.Currency,
 	}
-	MaxSallary := &models.Sallary{
+	MaxSallary := &jobmodels.Sallary{
 		Value: uint64(in.MaxSallary.Value),
 		Currency: in.MaxSallary.Currency,
 	}
 
-	newJob := &models.Job{
+	newJob := &jobmodels.Job{
 		JobName: in.JobName,
 		JobDescription: in.JobDescription,
 		JobCategory: in.JobCategory,
 		Location: *in.Location,
 		JobTag: in.JobTag,
 		SkillsRequired: in.SkillsRequired,
-		JobType: models.Job_DEFAULT,
-		JobStatus: models.Job_ACTIVE,
+		JobType: jobmodels.Job_DEFAULT,
+		JobStatus: jobmodels.Job_ACTIVE,
 		MinSallary: MinSallary,
 		MaxSallary: MaxSallary,
 	}
@@ -78,14 +79,14 @@ func (r *mutationResolver) CreateJob(ctx context.Context, in models.CreateJobReq
 	return job, nil
 }
 
-func (r *mutationResolver) CreateAccount(ctx context.Context, in models.AccountReq) (*models.Account, error) {
+func (r *mutationResolver) CreateAccount(ctx context.Context, in models.AccountReq) (*accountmodels.Account, error) {
 	_, span := trace.StartSpan(ctx, "gateway.http.gateway.CreateAccount")
 	defer span.End()
 
   ctx, cancel := context.WithTimeout(ctx, 3*time.Second)
   defer cancel()
 
-  acc := &models.Account{
+  acc := &accountmodels.Account{
 		Email: *in.Email,
     Username: *in.Username,
     Description: *in.Description,
@@ -111,7 +112,7 @@ func (r *mutationResolver) Auth(ctx context.Context, in models.AuthReq) (*models
   ctx, cancel := context.WithTimeout(ctx, 3*time.Second)
   defer cancel()
 
-  acc := &models.Account{
+  acc := &accountmodels.Account{
     Email: *in.Email,
     PasswordHash: *in.PasswordHash,
   }
@@ -139,7 +140,7 @@ func (r *mutationResolver) UpdateAccount(ctx context.Context, in models.AccountR
   ctx, cancel := context.WithTimeout(ctx, 3*time.Second)
   defer cancel()
 
-	acc := &models.Account{
+	acc := &accountmodels.Account{
 		AccountId: *in.AccountID,
     Email: *in.Email,
     Username: *in.Username,
@@ -163,7 +164,6 @@ func (r *mutationResolver) UpdateAccount(ctx context.Context, in models.AccountR
 func (r *mutationResolver) SendAccountConfirmation(ctx context.Context, in models.AccountConfirmationReq) (*models.ConfirmationRes, error) {
 	ctx, cancel := context.WithTimeout(ctx, 3*time.Second)
   defer cancel()
-	fmt.Println(in.Username)
 
 	confirmationRes, err := r.server.SendAccountConfirmation(ctx, in)
 	if err != nil {
