@@ -18,6 +18,9 @@ type GatewayServer struct {
 
 	JobSvcAddr string
 	JobClient *grpc.ClientConn
+
+	MailSvcAddr string
+	MailClient *grpc.ClientConn
 }
 
 func NewGraphQLServer(ctx context.Context) (*GatewayServer, error) {
@@ -25,9 +28,11 @@ func NewGraphQLServer(ctx context.Context) (*GatewayServer, error) {
 
   svc.AccountSvcAddr = viper.GetString("accounturi")
 	svc.JobSvcAddr = viper.GetString("joburi")
+	svc.MailSvcAddr = viper.GetString("mailuri")
 
 	mustConnGRPC(ctx, &svc.AccountClient, svc.AccountSvcAddr)
 	mustConnGRPC(ctx, &svc.JobClient, svc.JobSvcAddr)
+	mustConnGRPC(ctx, &svc.MailClient, svc.MailSvcAddr)
 
   return svc, nil
 }

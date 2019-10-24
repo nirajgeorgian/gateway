@@ -7,6 +7,7 @@ schema:
   - schemas/schema.graphql
   - schemas/account.graphql
   - schemas/job.graphql
+  - schemas/mail.graphql
 
 # Let gqlgen know where to put the generated server
 exec:
