@@ -3,14 +3,14 @@ kind: Deployment
 metadata:
   creationTimestamp: null
   labels:
-    app: gateway
+    app: gateway-svc
   name: gateway
   namespace: dododuck
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: gateway
+      app: gateway-svc
   strategy: {}
   template:
     metadata:

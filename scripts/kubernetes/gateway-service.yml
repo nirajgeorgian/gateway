@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  creationTimestamp: null
   name: gateway
   namespace: dododuck
   labels:
-    app: gateway
+    app: gateway-svc
+  creationTimestamp: null
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: gateway
+      app: gateway-svc
   strategy: {}
   template:
     metadata:
