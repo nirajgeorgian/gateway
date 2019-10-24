@@ -2,6 +2,12 @@
 
 package models
 
+type AccountConfirmationReq struct {
+	Username         string `json:"Username"`
+	Message          string `json:"Message"`
+	ConfirmationCode string `json:"ConfirmationCode"`
+}
+
 type AccountReq struct {
 	AccountID    *string `json:"AccountId"`
 	Email        *string `json:"Email"`
@@ -23,6 +29,10 @@ type AuthReq struct {
 type AuthRes struct {
 	Token *string `json:"Token"`
 	Valid *bool   `json:"Valid"`
+}
+
+type ConfirmationRes struct {
+	Status *bool `json:"Status"`
 }
 
 type CreateJobReq struct {

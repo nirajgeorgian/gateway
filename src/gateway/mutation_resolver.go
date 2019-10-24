@@ -5,6 +5,7 @@ import (
   "errors"
   "time"
   "log"
+	"fmt"
 
   models "github.com/nirajgeorgian/gateway/src/models"
 )
@@ -117,4 +118,17 @@ func (r *mutationResolver) UpdateAccount(ctx context.Context, in models.AccountR
   }
 
   return &models.UpdatedAccount{Account: upacc.Account, Success: &upacc.Success}, nil
+}
+
+func (r *mutationResolver) SendAccountConfirmation(ctx context.Context, in models.AccountConfirmationReq) (*models.ConfirmationRes, error) {
+	ctx, cancel := context.WithTimeout(ctx, 3*time.Second)
+  defer cancel()
+	fmt.Println(in.Username)
+
+	confirmationRes, err := r.server.SendAccountConfirmation(ctx, in)
+	if err != nil {
+    log.Fatalf("could not greet: %v", err)
+  }
+
+	return &models.ConfirmationRes{Status: &confirmationRes.Status}, nil
 }

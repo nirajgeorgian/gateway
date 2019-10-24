@@ -1,0 +1,13 @@
+input AccountConfirmationReq {
+  Username:  String!
+  Message: String!
+  ConfirmationCode: String!
+}
+
+type ConfirmationRes {
+	Status: Boolean
+}
+
+extend type Mutation {
+  SendAccountConfirmation(input: AccountConfirmationReq!): ConfirmationRes!
+}

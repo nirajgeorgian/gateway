@@ -67,6 +67,10 @@ type ComplexityRoot struct {
 		Valid func(childComplexity int) int
 	}
 
+	ConfirmationRes struct {
+		Status func(childComplexity int) int
+	}
+
 	Job struct {
 		CreatedAt      func(childComplexity int) int
 		JobAttachment  func(childComplexity int) int
@@ -87,11 +91,12 @@ type ComplexityRoot struct {
 	}
 
 	Mutation struct {
-		Auth          func(childComplexity int, input models.AuthReq) int
-		CreateAccount func(childComplexity int, input models.AccountReq) int
-		CreateJob     func(childComplexity int, input models.CreateJobReq) int
-		Dummy         func(childComplexity int) int
-		UpdateAccount func(childComplexity int, input models.AccountReq) int
+		Auth                    func(childComplexity int, input models.AuthReq) int
+		CreateAccount           func(childComplexity int, input models.AccountReq) int
+		CreateJob               func(childComplexity int, input models.CreateJobReq) int
+		Dummy                   func(childComplexity int) int
+		SendAccountConfirmation func(childComplexity int, input models.AccountConfirmationReq) int
+		UpdateAccount           func(childComplexity int, input models.AccountReq) int
 	}
 
 	PageInfo struct {
@@ -136,6 +141,7 @@ type MutationResolver interface {
 	UpdateAccount(ctx context.Context, input models.AccountReq) (*models.UpdatedAccount, error)
 	Auth(ctx context.Context, input models.AuthReq) (*models.AuthRes, error)
 	CreateJob(ctx context.Context, input models.CreateJobReq) (*models.Job, error)
+	SendAccountConfirmation(ctx context.Context, input models.AccountConfirmationReq) (*models.ConfirmationRes, error)
 }
 type QueryResolver interface {
 	Dummy(ctx context.Context) (*string, error)
@@ -245,6 +251,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.AuthRes.Valid(childComplexity), true
+
+	case "ConfirmationRes.Status":
+		if e.complexity.ConfirmationRes.Status == nil {
+			break
+		}
+
+		return e.complexity.ConfirmationRes.Status(childComplexity), true
 
 	case "Job.CreatedAt":
 		if e.complexity.Job.CreatedAt == nil {
@@ -400,6 +413,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.Dummy(childComplexity), true
+
+	case "Mutation.SendAccountConfirmation":
+		if e.complexity.Mutation.SendAccountConfirmation == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_SendAccountConfirmation_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.SendAccountConfirmation(childComplexity, args["input"].(models.AccountConfirmationReq)), true
 
 	case "Mutation.UpdateAccount":
 		if e.complexity.Mutation.UpdateAccount == nil {
@@ -691,6 +716,20 @@ extend type Mutation {
   CreateJob(input: CreateJobReq!): Job
 }
 `},
+	&ast.Source{Name: "schemas/mail.graphql", Input: `input AccountConfirmationReq {
+  Username:  String!
+  Message: String!
+  ConfirmationCode: String!
+}
+
+type ConfirmationRes {
+	Status: Boolean
+}
+
+extend type Mutation {
+  SendAccountConfirmation(input: AccountConfirmationReq!): ConfirmationRes!
+}
+`},
 	&ast.Source{Name: "schemas/schema.graphql", Input: `scalar DateTime
 scalar Date
 
@@ -756,6 +795,20 @@ func (ec *executionContext) field_Mutation_CreateJob_args(ctx context.Context, r
 	var arg0 models.CreateJobReq
 	if tmp, ok := rawArgs["input"]; ok {
 		arg0, err = ec.unmarshalNCreateJobReq2githubᚗcomᚋnirajgeorgianᚋgatewayᚋsrcᚋmodelsᚐCreateJobReq(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_SendAccountConfirmation_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 models.AccountConfirmationReq
+	if tmp, ok := rawArgs["input"]; ok {
+		arg0, err = ec.unmarshalNAccountConfirmationReq2githubᚗcomᚋnirajgeorgianᚋgatewayᚋsrcᚋmodelsᚐAccountConfirmationReq(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1273,6 +1326,40 @@ func (ec *executionContext) _AuthRes_Valid(ctx context.Context, field graphql.Co
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Valid, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*bool)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _ConfirmationRes_Status(ctx context.Context, field graphql.CollectedField, obj *models.ConfirmationRes) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "ConfirmationRes",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Status, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2051,6 +2138,50 @@ func (ec *executionContext) _Mutation_CreateJob(ctx context.Context, field graph
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
 	return ec.marshalOJob2ᚖgithubᚗcomᚋnirajgeorgianᚋgatewayᚋsrcᚋmodelsᚐJob(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_SendAccountConfirmation(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Mutation",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_SendAccountConfirmation_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	rctx.Args = args
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().SendAccountConfirmation(rctx, args["input"].(models.AccountConfirmationReq))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*models.ConfirmationRes)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNConfirmationRes2ᚖgithubᚗcomᚋnirajgeorgianᚋgatewayᚋsrcᚋmodelsᚐConfirmationRes(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _PageInfo_endCursor(ctx context.Context, field graphql.CollectedField, obj *models.PageInfo) (ret graphql.Marshaler) {
@@ -3754,6 +3885,36 @@ func (ec *executionContext) ___Type_ofType(ctx context.Context, field graphql.Co
 
 // region    **************************** input.gotpl *****************************
 
+func (ec *executionContext) unmarshalInputAccountConfirmationReq(ctx context.Context, obj interface{}) (models.AccountConfirmationReq, error) {
+	var it models.AccountConfirmationReq
+	var asMap = obj.(map[string]interface{})
+
+	for k, v := range asMap {
+		switch k {
+		case "Username":
+			var err error
+			it.Username, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "Message":
+			var err error
+			it.Message, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "ConfirmationCode":
+			var err error
+			it.ConfirmationCode, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputAccountReq(ctx context.Context, obj interface{}) (models.AccountReq, error) {
 	var it models.AccountReq
 	var asMap = obj.(map[string]interface{})
@@ -4113,6 +4274,30 @@ func (ec *executionContext) _AuthRes(ctx context.Context, sel ast.SelectionSet, 
 	return out
 }
 
+var confirmationResImplementors = []string{"ConfirmationRes"}
+
+func (ec *executionContext) _ConfirmationRes(ctx context.Context, sel ast.SelectionSet, obj *models.ConfirmationRes) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.RequestContext, sel, confirmationResImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ConfirmationRes")
+		case "Status":
+			out.Values[i] = ec._ConfirmationRes_Status(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
 var jobImplementors = []string{"Job"}
 
 func (ec *executionContext) _Job(ctx context.Context, sel ast.SelectionSet, obj *models.Job) graphql.Marshaler {
@@ -4234,6 +4419,11 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			out.Values[i] = ec._Mutation_Auth(ctx, field)
 		case "CreateJob":
 			out.Values[i] = ec._Mutation_CreateJob(ctx, field)
+		case "SendAccountConfirmation":
+			out.Values[i] = ec._Mutation_SendAccountConfirmation(ctx, field)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -4713,6 +4903,10 @@ func (ec *executionContext) ___Type(ctx context.Context, sel ast.SelectionSet, o
 
 // region    ***************************** type.gotpl *****************************
 
+func (ec *executionContext) unmarshalNAccountConfirmationReq2githubᚗcomᚋnirajgeorgianᚋgatewayᚋsrcᚋmodelsᚐAccountConfirmationReq(ctx context.Context, v interface{}) (models.AccountConfirmationReq, error) {
+	return ec.unmarshalInputAccountConfirmationReq(ctx, v)
+}
+
 func (ec *executionContext) unmarshalNAccountReq2githubᚗcomᚋnirajgeorgianᚋgatewayᚋsrcᚋmodelsᚐAccountReq(ctx context.Context, v interface{}) (models.AccountReq, error) {
 	return ec.unmarshalInputAccountReq(ctx, v)
 }
@@ -4733,6 +4927,20 @@ func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.Se
 		}
 	}
 	return res
+}
+
+func (ec *executionContext) marshalNConfirmationRes2githubᚗcomᚋnirajgeorgianᚋgatewayᚋsrcᚋmodelsᚐConfirmationRes(ctx context.Context, sel ast.SelectionSet, v models.ConfirmationRes) graphql.Marshaler {
+	return ec._ConfirmationRes(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNConfirmationRes2ᚖgithubᚗcomᚋnirajgeorgianᚋgatewayᚋsrcᚋmodelsᚐConfirmationRes(ctx context.Context, sel ast.SelectionSet, v *models.ConfirmationRes) graphql.Marshaler {
+	if v == nil {
+		if !ec.HasError(graphql.GetResolverContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	return ec._ConfirmationRes(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalNCreateJobReq2githubᚗcomᚋnirajgeorgianᚋgatewayᚋsrcᚋmodelsᚐCreateJobReq(ctx context.Context, v interface{}) (models.CreateJobReq, error) {

@@ -22,14 +22,19 @@ var AccountURI string
 // JobURI :- database uri connect to
 var JobURI string
 
+// MailURI
+var MailURI string
+
 func init() {
 	serveCmd.Flags().IntVarP(&Port, "port", "p", 8080, "port configuration for this application")
-	serveCmd.Flags().StringVarP(&AccountURI, "accounturi", "a", "localhost:3001", "URI for account service (required)")
 	serveCmd.Flags().StringVarP(&JobURI, "joburi", "j", "localhost:3000", "URI for job service (required)")
+	serveCmd.Flags().StringVarP(&AccountURI, "accounturi", "a", "localhost:3001", "URI for account service (required)")
+	serveCmd.Flags().StringVarP(&MailURI, "mailuri", "m", "127.0.0.1:3002", "URI for mail service (required)")
 
 	viper.BindPFlag("port", serveCmd.Flags().Lookup("port"))
 	viper.BindPFlag("accounturi", serveCmd.Flags().Lookup("accounturi"))
 	viper.BindPFlag("joburi", serveCmd.Flags().Lookup("joburi"))
+	viper.BindPFlag("mailuri", serveCmd.Flags().Lookup("mailuri"))
 }
 
 var serveCmd = &cobra.Command{
@@ -39,7 +44,7 @@ var serveCmd = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 		port := viper.GetString("port")
 
-		ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+		ctx, cancel := context.WithTimeout(context.Background(), 5 * time.Second)
 		defer cancel()
 
 		s, err := gateway.NewGraphQLServer(ctx)
