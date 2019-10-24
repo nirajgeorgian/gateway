@@ -27,14 +27,6 @@
   version = "v0.9.3"
 
 [[projects]]
-  digest = "1:04457f9f6f3ffc5fea48e71d62f2ca256637dee0a04d710288e27e05c8b41976"
-  name = "github.com/Sirupsen/logrus"
-  packages = ["."]
-  pruneopts = "UT"
-  revision = "839c75faf7f98a33d445d181f3018b5c3409a45e"
-  version = "v1.4.2"
-
-[[projects]]
   digest = "1:786e862ec180708b60ee670723e3edd969fd4309e7b1c315cd7de058ac62a011"
   name = "github.com/agnivade/levenshtein"
   packages = ["."]
@@ -49,14 +41,6 @@
   pruneopts = "UT"
   revision = "7762f7e404f8416dfa1d9bb6a8c192aa9acb4d19"
   version = "v1.0.10"
-
-[[projects]]
-  digest = "1:76dc72490af7174349349838f2fe118996381b31ea83243812a97e5a0fd5ed55"
-  name = "github.com/dgrijalva/jwt-go"
-  packages = ["."]
-  pruneopts = "UT"
-  revision = "06ea1031745cb8b3dab3f6a236daf2b0aa468b7e"
-  version = "v3.2.0"
 
 [[projects]]
   digest = "1:abeb38ade3f32a92943e5be54f55ed6d6e3b6602761d74b4aab4c9dd45c18abd"
@@ -105,17 +89,6 @@
   pruneopts = "UT"
   revision = "c3e18be99d19e6b3e8f1559eea2c161a665c4b6b"
   version = "v1.4.1"
-
-[[projects]]
-  digest = "1:cb1199ff0e752cc52b60be0204dfa51d8c12d1f2e329e0dec636fc22eeffc2d8"
-  name = "github.com/grpc-ecosystem/go-grpc-middleware"
-  packages = [
-    ".",
-    "recovery",
-  ]
-  pruneopts = "UT"
-  revision = "dd15ed025b6054e5253963e355991f3070d4e593"
-  version = "v1.1.0"
 
 [[projects]]
   digest = "1:29927baa59f4d7553df89dc19290c709f358df0f8063bcea1594bf5f07708287"
@@ -209,14 +182,6 @@
   version = "v1.0.0"
 
 [[projects]]
-  digest = "1:31e761d97c76151dde79e9d28964a812c46efc5baee4085b86f68f0c654450de"
-  name = "github.com/konsorten/go-windows-terminal-sequences"
-  packages = ["."]
-  pruneopts = "UT"
-  revision = "f55edac94c9bbba5d6182a4be46d86a2c9b5b50e"
-  version = "v1.0.2"
-
-[[projects]]
   digest = "1:0ead8e64fe356bd9221605e3ec40b4438509868018cbbbaaaff3ebae1b69b78b"
   name = "github.com/lib/pq"
   packages = [
@@ -246,30 +211,19 @@
   version = "v1.1.2"
 
 [[projects]]
-  branch = "master"
-  digest = "1:c7dc3a75bed9834c54a89bd429b426bf657670bc82d1277b0d35c16f7ab612c3"
-  name = "github.com/nirajgeorgian/account"
+  digest = "1:5e77097fe469a5197f48f4625b0de00024529ce29af6b93a6e5635f42a54599a"
+  name = "github.com/openzipkin/zipkin-go"
   packages = [
-    "src/api",
-    "src/app",
-    "src/db",
-    "src/model",
+    ".",
+    "idgenerator",
+    "model",
+    "propagation",
+    "reporter",
+    "reporter/http",
   ]
   pruneopts = "UT"
-  revision = "b48ae71699c8e27890a3b13b5bfccd2e36342d2d"
-
-[[projects]]
-  branch = "master"
-  digest = "1:fb49ae4c2624076bc83f29bc0d59db524889e8a983c584fe18d603a876310e26"
-  name = "github.com/nirajgeorgian/job"
-  packages = [
-    "src/api",
-    "src/app",
-    "src/db",
-    "src/model",
-  ]
-  pruneopts = "UT"
-  revision = "5baa39428e8bd70ba7703e5000661b03ba9b2253"
+  revision = "c29478e51bfb2e9c93e0e9f5e015e5993a490399"
+  version = "v0.2.2"
 
 [[projects]]
   digest = "1:bbd3997f0121200f72b64d7a3826eb8a0b910d6a4c19894c9fe2852b9e5eaf3b"
@@ -294,14 +248,6 @@
   pruneopts = "UT"
   revision = "d3b5b032dc8e8927d31a5071b56e14c89f045135"
   version = "v2.0.1"
-
-[[projects]]
-  digest = "1:274f67cb6fed9588ea2521ecdac05a6d62a8c51c074c1fccc6a49a40ba80e925"
-  name = "github.com/satori/go.uuid"
-  packages = ["."]
-  pruneopts = "UT"
-  revision = "f58768cc1a7a7e77a3bd49e98cdd21419399b6a3"
-  version = "v1.2.0"
 
 [[projects]]
   digest = "1:9421f6e9e28ef86933e824b5caff441366f2b69bb281085b9dca40e1f27a1602"
@@ -387,22 +333,25 @@
   version = "v1.1.2"
 
 [[projects]]
-  branch = "master"
-  digest = "1:9d5b5d543996dd584da1db1e0de1926f3e4c3a8dba0fa2f8db70f3ebee2342e0"
-  name = "golang.org/x/crypto"
+  digest = "1:1b10a8feddea0d04248a499b52d5b902ae71e645c98256284951f0a6278d5c21"
+  name = "go.opencensus.io"
   packages = [
-    "bcrypt",
-    "blowfish",
+    ".",
+    "exporter/zipkin",
+    "internal",
+    "trace",
+    "trace/internal",
+    "trace/tracestate",
   ]
   pruneopts = "UT"
-  revision = "87dc89f01550277dc22b74ffcf4cd89fa2f40f4c"
+  revision = "75c0cca22312e51bfd4fafdbe9197ae399e18b38"
+  version = "v0.20.2"
 
 [[projects]]
   branch = "master"
-  digest = "1:c124e945335a9c62ede3a565f3198c5ae9a5ecc39fddd85871138362d128fb74"
+  digest = "1:c21f1f304711b9da16a0aabaa6a2dd697576e9ef5ac0bbd806fed6998cb6c6d6"
   name = "golang.org/x/net"
   packages = [
-    "context",
     "http/httpguts",
     "http2",
     "http2/hpack",
@@ -481,7 +430,7 @@
   revision = "548a555dbc03994223efbaba0090152849259498"
 
 [[projects]]
-  digest = "1:e08cc9bc357a312934182fd62bec22383a120786f3ce47f1a41787e7fe26b45c"
+  digest = "1:6cd77d0b616d2dcebd363dfecba593f27b0151fc82cdb5fbfb96c5a7cfbc95b5"
   name = "google.golang.org/grpc"
   packages = [
     ".",
@@ -510,8 +459,6 @@
     "metadata",
     "naming",
     "peer",
-    "reflection",
-    "reflection/grpc_reflection_v1alpha",
     "resolver",
     "resolver/dns",
     "resolver/passthrough",
@@ -540,14 +487,25 @@
     "github.com/99designs/gqlgen/graphql",
     "github.com/99designs/gqlgen/graphql/introspection",
     "github.com/99designs/gqlgen/handler",
-    "github.com/nirajgeorgian/account/src/api",
-    "github.com/nirajgeorgian/account/src/model",
-    "github.com/nirajgeorgian/job/src/api",
-    "github.com/nirajgeorgian/job/src/model",
+    "github.com/gogo/protobuf/gogoproto",
+    "github.com/golang/protobuf/proto",
+    "github.com/golang/protobuf/ptypes",
+    "github.com/golang/protobuf/ptypes/timestamp",
+    "github.com/infobloxopen/atlas-app-toolkit/gorm",
+    "github.com/infobloxopen/protoc-gen-gorm/errors",
+    "github.com/infobloxopen/protoc-gen-gorm/options",
+    "github.com/jinzhu/gorm",
+    "github.com/openzipkin/zipkin-go",
+    "github.com/openzipkin/zipkin-go/reporter/http",
+    "github.com/pkg/errors",
     "github.com/spf13/cobra",
     "github.com/spf13/viper",
     "github.com/vektah/gqlparser",
     "github.com/vektah/gqlparser/ast",
+    "go.opencensus.io/exporter/zipkin",
+    "go.opencensus.io/trace",
+    "google.golang.org/genproto/protobuf/field_mask",
+    "google.golang.org/grpc",
   ]
   solver-name = "gps-cdcl"
   solver-version = 1

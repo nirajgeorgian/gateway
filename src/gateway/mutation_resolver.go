@@ -7,6 +7,7 @@ import (
   "log"
 	"fmt"
 
+	"go.opencensus.io/trace"
   models "github.com/nirajgeorgian/gateway/src/models"
 )
 
@@ -19,15 +20,25 @@ type mutationResolver struct {
 }
 
 func (r *mutationResolver)  Dummy(ctx context.Context) (*string, error)  {
+	_, span := trace.StartSpan(ctx, "gateway.http.gateway.Dummy")
+	defer span.End()
+
   ctx, cancel := context.WithTimeout(ctx, 3*time.Second)
   defer cancel()
 
   msg := "dodo duck"
 
+	span.Annotate([]trace.Attribute{
+		trace.StringAttribute("fetch", "CreateAccount"),
+	}, "fetch Dummy from client")
+
   return &msg, nil
 }
 
 func (r *mutationResolver) CreateJob(ctx context.Context, in models.CreateJobReq) (*models.Job, error) {
+	_, span := trace.StartSpan(ctx, "gateway.http.gateway.CreateJob")
+	defer span.End()
+
 	ctx, cancel := context.WithTimeout(ctx, 3*time.Second)
   defer cancel()
 
@@ -56,13 +67,21 @@ func (r *mutationResolver) CreateJob(ctx context.Context, in models.CreateJobReq
 
 	job, err := r.server.CreateJob(ctx, *newJob)
   if err != nil {
+		span.SetStatus(trace.Status{Code: trace.StatusCodeUnknown, Message: err.Error()})
     log.Fatalf("could not greet: %v", err)
   }
+
+	span.Annotate([]trace.Attribute{
+		trace.StringAttribute("fetch", "CreateJob"),
+	}, "fetch CreateJob from client")
 
 	return job, nil
 }
 
 func (r *mutationResolver) CreateAccount(ctx context.Context, in models.AccountReq) (*models.Account, error) {
+	_, span := trace.StartSpan(ctx, "gateway.http.gateway.CreateAccount")
+	defer span.End()
+
   ctx, cancel := context.WithTimeout(ctx, 3*time.Second)
   defer cancel()
 
@@ -74,13 +93,21 @@ func (r *mutationResolver) CreateAccount(ctx context.Context, in models.AccountR
   }
   acc, err := r.server.CreateAccount(ctx, *acc)
   if err != nil {
+		span.SetStatus(trace.Status{Code: trace.StatusCodeUnknown, Message: err.Error()})
     log.Fatalf("could not greet: %v", err)
   }
+
+	span.Annotate([]trace.Attribute{
+		trace.StringAttribute("fetch", "CreateAccount"),
+	}, "fetch CreateAccount from client")
 
   return acc, nil
 }
 
 func (r *mutationResolver) Auth(ctx context.Context, in models.AuthReq) (*models.AuthRes, error) {
+	_, span := trace.StartSpan(ctx, "gateway.http.gateway.Auth")
+	defer span.End()
+
   ctx, cancel := context.WithTimeout(ctx, 3*time.Second)
   defer cancel()
 
@@ -91,8 +118,13 @@ func (r *mutationResolver) Auth(ctx context.Context, in models.AuthReq) (*models
 
   token, err := r.server.Auth(ctx, *acc)
   if err != nil {
+		span.SetStatus(trace.Status{Code: trace.StatusCodeUnknown, Message: err.Error()})
     log.Fatalf("could not greet: %v", err)
   }
+
+	span.Annotate([]trace.Attribute{
+		trace.StringAttribute("fetch", "Auth"),
+	}, "fetch Auth from client")
 
   return &models.AuthRes{
     Token: &token.Token,
@@ -101,6 +133,9 @@ func (r *mutationResolver) Auth(ctx context.Context, in models.AuthReq) (*models
 }
 
 func (r *mutationResolver) UpdateAccount(ctx context.Context, in models.AccountReq) (*models.UpdatedAccount, error) {
+	_, span := trace.StartSpan(ctx, "gateway.http.gateway.UpdateAccount")
+	defer span.End()
+
   ctx, cancel := context.WithTimeout(ctx, 3*time.Second)
   defer cancel()
 
@@ -114,8 +149,13 @@ func (r *mutationResolver) UpdateAccount(ctx context.Context, in models.AccountR
 
   upacc, err := r.server.UpdateAccount(ctx, *acc)
   if err != nil {
+		span.SetStatus(trace.Status{Code: trace.StatusCodeUnknown, Message: err.Error()})
     log.Fatalf("could not greet: %v", err)
   }
+
+	span.Annotate([]trace.Attribute{
+		trace.StringAttribute("fetch", "UpdateAccount"),
+	}, "fetch UpdateAccount from client")
 
   return &models.UpdatedAccount{Account: upacc.Account, Success: &upacc.Success}, nil
 }
