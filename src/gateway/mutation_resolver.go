@@ -7,6 +7,10 @@ import (
   "log"
 
 	"go.opencensus.io/trace"
+	"google.golang.org/grpc/status"
+	"github.com/vektah/gqlparser/gqlerror"
+	"github.com/99designs/gqlgen/graphql"
+
   models "github.com/nirajgeorgian/gateway/src/models"
 	jobmodels "github.com/nirajgeorgian/gateway/src/job/models"
 	accountmodels "github.com/nirajgeorgian/gateway/src/account/models"
@@ -69,8 +73,14 @@ func (r *mutationResolver) CreateJob(ctx context.Context, in models.CreateJobReq
 	job, err := r.server.CreateJob(ctx, *newJob)
   if err != nil {
 		span.SetStatus(trace.Status{Code: trace.StatusCodeUnknown, Message: err.Error()})
-    log.Fatalf("could not greet: %v", err)
-  }
+		// err = graphql.AddError(ctx, &gqlerror.Error{
+		// 	Message: err.Message,
+		// 	Extensions: map[string]interface{}{
+		// 		"code": "random",
+		// 	},
+		// })
+		return nil, err
+	}
 
 	span.Annotate([]trace.Attribute{
 		trace.StringAttribute("fetch", "CreateJob"),
@@ -95,8 +105,20 @@ func (r *mutationResolver) CreateAccount(ctx context.Context, in models.AccountR
   acc, err := r.server.CreateAccount(ctx, *acc)
   if err != nil {
 		span.SetStatus(trace.Status{Code: trace.StatusCodeUnknown, Message: err.Error()})
-    log.Fatalf("could not greet: %v", err)
-  }
+		st, ok := status.FromError(err)
+		if ok {
+			// Error is a grpc error
+			graphql.AddError(ctx, &gqlerror.Error{
+				Message: st.Message(),
+				Extensions: map[string]interface{}{
+					"code": st.Code(),
+				},
+			})
+			return nil, err
+		} else {
+			return nil, err
+		}
+	}
 
 	span.Annotate([]trace.Attribute{
 		trace.StringAttribute("fetch", "CreateAccount"),

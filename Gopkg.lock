@@ -51,6 +51,35 @@
   version = "v1.4.7"
 
 [[projects]]
+  digest = "1:cc93dd54278f6c0dd4b43588b3cf2c07b09b2a6dd4e2617edf81aa8946054c1e"
+  name = "github.com/gin-contrib/cors"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "5f50d4fb4e0306dcacc6f8e9bea2dcee784dbbdf"
+  version = "v1.3.0"
+
+[[projects]]
+  digest = "1:3ee1d175a75b911a659fbd860060874c4f503e793c5870d13e5a0ede529a63cf"
+  name = "github.com/gin-contrib/sse"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "54d8467d122d380a14768b6b4e5cd7ca4755938f"
+  version = "v0.1.0"
+
+[[projects]]
+  digest = "1:d8bd2a337f6ff2188e08f72c614f2f3f0fd48e6a7b37a071b197e427d77d3a47"
+  name = "github.com/gin-gonic/gin"
+  packages = [
+    ".",
+    "binding",
+    "internal/json",
+    "render",
+  ]
+  pruneopts = "UT"
+  revision = "b75d67cd51eb53c3c3a2fc406524c940021ffbda"
+  version = "v1.4.0"
+
+[[projects]]
   digest = "1:e20a9d6598878d629e04541d96076bf232c1ee36f6b267c4a5dae7779f15c36a"
   name = "github.com/gogo/protobuf"
   packages = [
@@ -182,6 +211,14 @@
   version = "v1.0.0"
 
 [[projects]]
+  digest = "1:beb5b4f42a25056f0aa291b5eadd21e2f2903a05d15dfe7caf7eaee7e12fa972"
+  name = "github.com/json-iterator/go"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "03217c3e97663914aec3faafde50d081f197a0a2"
+  version = "1.1.8"
+
+[[projects]]
   digest = "1:0ead8e64fe356bd9221605e3ec40b4438509868018cbbbaaaff3ebae1b69b78b"
   name = "github.com/lib/pq"
   packages = [
@@ -203,12 +240,36 @@
   version = "v1.8.1"
 
 [[projects]]
+  digest = "1:d62282425ffb75047679d7e2c3b980eea7f82c05ef5fb9142ee617ebac6e7432"
+  name = "github.com/mattn/go-isatty"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "88ba11cfdc67c7588b30042edf244b2875f892b6"
+  version = "v0.0.10"
+
+[[projects]]
   digest = "1:53bc4cd4914cd7cd52139990d5170d6dc99067ae31c56530621b18b35fc30318"
   name = "github.com/mitchellh/mapstructure"
   packages = ["."]
   pruneopts = "UT"
   revision = "3536a929edddb9a5b34bd6861dc4a9647cb459fe"
   version = "v1.1.2"
+
+[[projects]]
+  digest = "1:33422d238f147d247752996a26574ac48dcf472976eda7f5134015f06bf16563"
+  name = "github.com/modern-go/concurrent"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "bacd9c7ef1dd9b15be4a9909b8ac7a4e313eec94"
+  version = "1.0.3"
+
+[[projects]]
+  digest = "1:e32bdbdb7c377a07a9a46378290059822efdce5c8d96fe71940d87cb4f918855"
+  name = "github.com/modern-go/reflect2"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "4b7aa43c6742a2c18fdef89dd197aaae7dac7ccd"
+  version = "1.0.1"
 
 [[projects]]
   digest = "1:5e77097fe469a5197f48f4625b0de00024529ce29af6b93a6e5635f42a54599a"
@@ -307,6 +368,14 @@
   pruneopts = "UT"
   revision = "b5bf975e5823809fb22c7644d008757f78a4259e"
   version = "v1.4.0"
+
+[[projects]]
+  digest = "1:5a1cf4e370bc86137b58da2ae065e76526d32b11f62a7665f36dbd5f41fa95ff"
+  name = "github.com/ugorji/go"
+  packages = ["codec"]
+  pruneopts = "UT"
+  revision = "23ab95ef5dc3b70286760af84ce2327a2b64ed62"
+  version = "v1.1.7"
 
 [[projects]]
   digest = "1:1d3ef3dd057d2eb1819e945f88cc83835296c9b7fb13ad3194c937c4e2891fee"
@@ -472,6 +541,14 @@
   version = "v1.24.0"
 
 [[projects]]
+  digest = "1:cbc72c4c4886a918d6ab4b95e347ffe259846260f99ebdd8a198c2331cf2b2e9"
+  name = "gopkg.in/go-playground/validator.v8"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "5f1438d3fca68893a817e4a66806cea46a9e4ebf"
+  version = "v8.18.2"
+
+[[projects]]
   digest = "1:59f10c1537d2199d9115d946927fe31165959a95190849c82ff11e05803528b0"
   name = "gopkg.in/yaml.v2"
   packages = ["."]
@@ -487,6 +564,8 @@
     "github.com/99designs/gqlgen/graphql",
     "github.com/99designs/gqlgen/graphql/introspection",
     "github.com/99designs/gqlgen/handler",
+    "github.com/gin-contrib/cors",
+    "github.com/gin-gonic/gin",
     "github.com/gogo/protobuf/gogoproto",
     "github.com/golang/protobuf/proto",
     "github.com/golang/protobuf/ptypes",
@@ -502,10 +581,12 @@
     "github.com/spf13/viper",
     "github.com/vektah/gqlparser",
     "github.com/vektah/gqlparser/ast",
+    "github.com/vektah/gqlparser/gqlerror",
     "go.opencensus.io/exporter/zipkin",
     "go.opencensus.io/trace",
     "google.golang.org/genproto/protobuf/field_mask",
     "google.golang.org/grpc",
+    "google.golang.org/grpc/status",
   ]
   solver-name = "gps-cdcl"
   solver-version = 1

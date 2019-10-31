@@ -3,11 +3,16 @@ package cmd
 import (
 	"log"
 	"context"
-	"net/http"
+	"errors"
+	"runtime/debug"
 
+	"github.com/gin-contrib/cors"
+	"github.com/gin-gonic/gin"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"github.com/99designs/gqlgen/handler"
+	"github.com/vektah/gqlparser/gqlerror"
+	"github.com/99designs/gqlgen/graphql"
 
 
 	"go.opencensus.io/exporter/zipkin"
@@ -81,10 +86,37 @@ var serveCmd = &cobra.Command{
 			log.Fatal(err)
 		}
 
-		http.Handle("/graphql", handler.GraphQL(s.ToExecutableSchema()))
-		http.Handle("/playground", handler.Playground("gateway", "/graphql"))
+		r := gin.Default()
+		r.Use(cors.Default())
 
-		log.Fatal(http.ListenAndServe(":"+port, nil))
+		r.POST("/", func(c *gin.Context) {
+			h := handler.GraphQL(
+				s.ToExecutableSchema(),
+				handler.IntrospectionEnabled(true),
+				handler.ErrorPresenter(func(ctx context.Context, e error) *gqlerror.Error {
+					// any special logic you want to do here. Must specify path for correct null bubbling behaviour.
+					// if myError, ok := e.(MyError) ; ok {
+					// 	return gqlerror.ErrorPathf(graphql.GetResolverContext(ctx).Path(), "Eeek!")
+					// }
+
+					return graphql.DefaultErrorPresenter(ctx, e)
+				}),
+				handler.RecoverFunc(func(ctx context.Context, err interface{}) error {
+					// send this panic somewhere
+					log.Print(err)
+					debug.PrintStack()
+					return errors.New("user message on panic")
+				}),
+			)
+
+				h.ServeHTTP(c.Writer, c.Request)
+		})
+		r.GET("/", func(c *gin.Context) {
+			h := handler.Playground("GraphQL", "/")
+			h.ServeHTTP(c.Writer, c.Request)
+		})
+
+		r.Run(":" +  port)
 
 		return nil
 	},
