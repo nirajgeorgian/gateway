@@ -17,8 +17,10 @@ message Account {
   string password_hash = 4 [(gorm.field).tag = { type: "varchar(120)" }];
   string password_salt = 5;
   string description = 6 [(gorm.field).tag = { type: "varchar(512)" }];
-  bool verified = 7 [(gorm.field).tag = { type: "boolean"}];
+  string verification_code = 7 [(gorm.field).tag = { type: "varchar(8)" }];
+  string account_type = 8 [(gorm.field).tag = { type: "varchar(25)" }];
+  bool verified = 9 [(gorm.field).tag = { type: "boolean"}];
 
-  google.protobuf.Timestamp created_at = 8;
-  google.protobuf.Timestamp updated_at = 9;
+  google.protobuf.Timestamp created_at = 10;
+  google.protobuf.Timestamp updated_at = 11;
 }

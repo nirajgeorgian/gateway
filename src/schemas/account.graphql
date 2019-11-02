@@ -5,6 +5,9 @@ type Account {
   Description: String
   PasswordHash: String
   PasswordSalt: String
+  VerificationCode: String
+  Verified: Boolean
+  AccountType: String
   CreatedAt: Timestamp
   UpdatedAt: Timestamp
 }
@@ -31,10 +34,11 @@ input ValidateEmailReq {
 }
 input AccountReq {
   AccountId: String
-  Email: String
-  Username: String
-  Description: String
-  PasswordHash: String
+  Email: String!
+  Username: String!
+  Description: String!
+  PasswordHash: String!
+  AccountType: String!
 }
 input AuthReq {
   Email: String

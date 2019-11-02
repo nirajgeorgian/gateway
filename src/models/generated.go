@@ -8,16 +8,18 @@ import (
 
 type AccountConfirmationReq struct {
 	Username         string `json:"Username"`
+	Email            string `json:"Email"`
 	Message          string `json:"Message"`
 	ConfirmationCode string `json:"ConfirmationCode"`
 }
 
 type AccountReq struct {
 	AccountID    *string `json:"AccountId"`
-	Email        *string `json:"Email"`
-	Username     *string `json:"Username"`
-	Description  *string `json:"Description"`
-	PasswordHash *string `json:"PasswordHash"`
+	Email        string  `json:"Email"`
+	Username     string  `json:"Username"`
+	Description  string  `json:"Description"`
+	PasswordHash string  `json:"PasswordHash"`
+	AccountType  string  `json:"AccountType"`
 }
 
 type AttachmentInput struct {

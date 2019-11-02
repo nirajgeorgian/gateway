@@ -10,6 +10,8 @@ import (
 	proto "github.com/golang/protobuf/proto"
 	models "github.com/nirajgeorgian/gateway/src/job/models"
 	grpc "google.golang.org/grpc"
+	codes "google.golang.org/grpc/codes"
+	status "google.golang.org/grpc/status"
 	math "math"
 )
 
@@ -163,6 +165,14 @@ func (c *jobServiceClient) CreateJob(ctx context.Context, in *CreateJobReq, opts
 // JobServiceServer is the server API for JobService service.
 type JobServiceServer interface {
 	CreateJob(context.Context, *CreateJobReq) (*CreateJobRes, error)
+}
+
+// UnimplementedJobServiceServer can be embedded to have forward compatible implementations.
+type UnimplementedJobServiceServer struct {
+}
+
+func (*UnimplementedJobServiceServer) CreateJob(ctx context.Context, req *CreateJobReq) (*CreateJobRes, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateJob not implemented")
 }
 
 func RegisterJobServiceServer(s *grpc.Server, srv JobServiceServer) {

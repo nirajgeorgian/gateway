@@ -10,7 +10,7 @@ import (
 func (c *GatewayServer) SendAccountConfirmation(ctx context.Context, in models.AccountConfirmationReq) (*api.ConfirmationRes, error) {
 	r, err := api.NewMailsServiceClient(c.MailClient).SendAccountConfirmation(
 		ctx,
-		&api.AccountConfirmationReq{Username: in.Username, Message: in.Message, ConfirmationCode: in.ConfirmationCode},
+		&api.AccountConfirmationReq{Username: in.Username, Message: in.Message, ConfirmationCode: in.ConfirmationCode, Email: in.Email},
 	)
 	if err != nil {
 		return nil, err

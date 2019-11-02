@@ -97,10 +97,11 @@ func (r *mutationResolver) CreateAccount(ctx context.Context, in models.AccountR
   defer cancel()
 
   acc := &accountmodels.Account{
-		Email: *in.Email,
-    Username: *in.Username,
-    Description: *in.Description,
-    PasswordHash: *in.PasswordHash,
+    Email: in.Email,
+    Username: in.Username,
+    Description: in.Description,
+    PasswordHash: in.PasswordHash,
+    AccountType: in.AccountType,
   }
   acc, err := r.server.CreateAccount(ctx, *acc)
   if err != nil {
@@ -164,10 +165,10 @@ func (r *mutationResolver) UpdateAccount(ctx context.Context, in models.AccountR
 
 	acc := &accountmodels.Account{
 		AccountId: *in.AccountID,
-    Email: *in.Email,
-    Username: *in.Username,
-    Description: *in.Description,
-    PasswordHash: *in.PasswordHash,
+    Email: in.Email,
+    Username: in.Username,
+    Description: in.Description,
+    PasswordHash: in.PasswordHash,
   }
 
   upacc, err := r.server.UpdateAccount(ctx, *acc)
@@ -184,13 +185,21 @@ func (r *mutationResolver) UpdateAccount(ctx context.Context, in models.AccountR
 }
 
 func (r *mutationResolver) SendAccountConfirmation(ctx context.Context, in models.AccountConfirmationReq) (*models.ConfirmationRes, error) {
+	_, span := trace.StartSpan(ctx, "gateway.http.gateway.SendAccountConfirmation")
+	defer span.End()
+
 	ctx, cancel := context.WithTimeout(ctx, 3*time.Second)
   defer cancel()
 
 	confirmationRes, err := r.server.SendAccountConfirmation(ctx, in)
 	if err != nil {
+		span.SetStatus(trace.Status{Code: trace.StatusCodeUnknown, Message: err.Error()})
     log.Fatalf("could not greet: %v", err)
   }
+
+	span.Annotate([]trace.Attribute{
+		trace.StringAttribute("fetch", "SendAccountConfirmation"),
+	}, "fetch SendAccountConfirmation from client")
 
 	return &models.ConfirmationRes{Status: &confirmationRes.Status}, nil
 }

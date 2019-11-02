@@ -34,11 +34,13 @@ setup-go: ## install go dependency and setup go environment
 	@echo "installing grpc..."
 	@go get google.golang.org/grpc
 	@cd ${GOPATH}/src/google.golang.org/grpc git checkout v1.23.0;
-	@echo "installing protoc-gen-go..."
+	@echo "installing proto and protoc-gen-go..."
+	@go get github.com/golang/protobuf/proto
 	@go get github.com/golang/protobuf/protoc-gen-go
 	@cd ${GOPATH}/src/github.com/golang/protobuf git checkout v1.3.0;
 	@echo "installing protoc-gen-gorm..."
 	@go get github.com/infobloxopen/protoc-gen-gorm
+	@cd ${GOPATH}/src/github.com/infobloxopen/protoc-gen-gorm; dep ensure;
 	@cd ${GOPATH}/src/github.com/infobloxopen/protoc-gen-gorm git checkout v0.17.0;
 	@echo "installing atlas-app-toolkit..."
 	@go get github.com/infobloxopen/atlas-app-toolkit/gorm
@@ -51,7 +53,6 @@ dep: ## setup all dependencies
 	@rm -r vendor/google.golang.org/grpc
 
 build: ## Build the binary file for server
-	@echo "dodo duck"
 	@go build -i -v -o $(SERVER_OUT) $(SERVER_PKG_BUILD)
 
 protos: ## generate the server and client proto defination files

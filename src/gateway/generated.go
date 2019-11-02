@@ -49,14 +49,17 @@ type DirectiveRoot struct {
 
 type ComplexityRoot struct {
 	Account struct {
-		AccountId    func(childComplexity int) int
-		CreatedAt    func(childComplexity int) int
-		Description  func(childComplexity int) int
-		Email        func(childComplexity int) int
-		PasswordHash func(childComplexity int) int
-		PasswordSalt func(childComplexity int) int
-		UpdatedAt    func(childComplexity int) int
-		Username     func(childComplexity int) int
+		AccountId        func(childComplexity int) int
+		AccountType      func(childComplexity int) int
+		CreatedAt        func(childComplexity int) int
+		Description      func(childComplexity int) int
+		Email            func(childComplexity int) int
+		PasswordHash     func(childComplexity int) int
+		PasswordSalt     func(childComplexity int) int
+		UpdatedAt        func(childComplexity int) int
+		Username         func(childComplexity int) int
+		VerificationCode func(childComplexity int) int
+		Verified         func(childComplexity int) int
 	}
 
 	Attachment struct {
@@ -177,6 +180,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Account.AccountId(childComplexity), true
 
+	case "Account.AccountType":
+		if e.complexity.Account.AccountType == nil {
+			break
+		}
+
+		return e.complexity.Account.AccountType(childComplexity), true
+
 	case "Account.CreatedAt":
 		if e.complexity.Account.CreatedAt == nil {
 			break
@@ -225,6 +235,20 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Account.Username(childComplexity), true
+
+	case "Account.VerificationCode":
+		if e.complexity.Account.VerificationCode == nil {
+			break
+		}
+
+		return e.complexity.Account.VerificationCode(childComplexity), true
+
+	case "Account.Verified":
+		if e.complexity.Account.Verified == nil {
+			break
+		}
+
+		return e.complexity.Account.Verified(childComplexity), true
 
 	case "Attachment.Type":
 		if e.complexity.Attachment.Type == nil {
@@ -615,6 +639,9 @@ var parsedSchema = gqlparser.MustLoadSchema(
   Description: String
   PasswordHash: String
   PasswordSalt: String
+  VerificationCode: String
+  Verified: Boolean
+  AccountType: String
   CreatedAt: Timestamp
   UpdatedAt: Timestamp
 }
@@ -641,10 +668,11 @@ input ValidateEmailReq {
 }
 input AccountReq {
   AccountId: String
-  Email: String
-  Username: String
-  Description: String
-  PasswordHash: String
+  Email: String!
+  Username: String!
+  Description: String!
+  PasswordHash: String!
+  AccountType: String!
 }
 input AuthReq {
   Email: String
@@ -720,6 +748,7 @@ extend type Mutation {
 `},
 	&ast.Source{Name: "schemas/mail.graphql", Input: `input AccountConfirmationReq {
   Username:  String!
+  Email: String!
   Message: String!
   ConfirmationCode: String!
 }
@@ -1118,6 +1147,108 @@ func (ec *executionContext) _Account_PasswordSalt(ctx context.Context, field gra
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.PasswordSalt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalOString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Account_VerificationCode(ctx context.Context, field graphql.CollectedField, obj *models2.Account) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Account",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.VerificationCode, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalOString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Account_Verified(ctx context.Context, field graphql.CollectedField, obj *models2.Account) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Account",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Verified, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalOBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Account_AccountType(ctx context.Context, field graphql.CollectedField, obj *models2.Account) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Account",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.AccountType, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -3899,6 +4030,12 @@ func (ec *executionContext) unmarshalInputAccountConfirmationReq(ctx context.Con
 			if err != nil {
 				return it, err
 			}
+		case "Email":
+			var err error
+			it.Email, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
 		case "Message":
 			var err error
 			it.Message, err = ec.unmarshalNString2string(ctx, v)
@@ -3931,25 +4068,31 @@ func (ec *executionContext) unmarshalInputAccountReq(ctx context.Context, obj in
 			}
 		case "Email":
 			var err error
-			it.Email, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.Email, err = ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Username":
 			var err error
-			it.Username, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.Username, err = ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "Description":
 			var err error
-			it.Description, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.Description, err = ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
 		case "PasswordHash":
 			var err error
-			it.PasswordHash, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			it.PasswordHash, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "AccountType":
+			var err error
+			it.AccountType, err = ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -4203,6 +4346,12 @@ func (ec *executionContext) _Account(ctx context.Context, sel ast.SelectionSet, 
 			out.Values[i] = ec._Account_PasswordHash(ctx, field, obj)
 		case "PasswordSalt":
 			out.Values[i] = ec._Account_PasswordSalt(ctx, field, obj)
+		case "VerificationCode":
+			out.Values[i] = ec._Account_VerificationCode(ctx, field, obj)
+		case "Verified":
+			out.Values[i] = ec._Account_Verified(ctx, field, obj)
+		case "AccountType":
+			out.Values[i] = ec._Account_AccountType(ctx, field, obj)
 		case "CreatedAt":
 			out.Values[i] = ec._Account_CreatedAt(ctx, field, obj)
 		case "UpdatedAt":

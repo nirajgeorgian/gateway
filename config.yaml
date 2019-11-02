@@ -1,0 +1,7 @@
+PORT: 8080
+ZIPKINENDPOINT: http://localhost:9411
+DATABASEURI: "host=salt.db.elephantsql.com user=pvhdolsp dbname=pvhdolsp password=WPSXt41F15pPgpTx-0V7CC6Ec5ALoyvL sslmode=disable"
+SECRETKEY: accountN9
+MAILURI: "127.0.0.1:3002"
+ACCOUNTURI: "127.0.0.1:3004"
+JOBURI: "127.0.0.1:3005"

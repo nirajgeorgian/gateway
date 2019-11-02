@@ -6,13 +6,16 @@ import "github.com/gogo/protobuf/gogoproto/gogo.proto";
 option (gogoproto.goproto_registration) = true;
 
 // --------------- main api --------------------------
-message ConfirmationRes {
-	bool Status = 1;
-}
+
+// account confirmation (also on reconfirmation)
 message AccountConfirmationReq {
 	string Username = 1;
-	string Message = 2;
-	string ConfirmationCode = 3;
+	string Email = 2;
+	string Message = 3;
+	string ConfirmationCode = 4;
+}
+message ConfirmationRes {
+	bool Status = 1;
 }
 
 service MailsService {

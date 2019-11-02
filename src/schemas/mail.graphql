@@ -1,5 +1,6 @@
 input AccountConfirmationReq {
   Username:  String!
+  Email: String!
   Message: String!
   ConfirmationCode: String!
 }
